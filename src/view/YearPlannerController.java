@@ -201,12 +201,31 @@ public class YearPlannerController implements Initializable {
         statusArea.appendText("Loading Results of Students into memory...\n\n");
         progressBar.setProgress(0.30);
         taskProgress.setProgress(0.10);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Please Select The E-Vision Result Dump For The Year Planner");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel 2003 Format", "*.xls"));
+        File evisionFile = fileChooser.showOpenDialog(YearPlanner.getPrimaryStage());
         
+        ExcelReader reader = new ExcelReader(evisionFile);
         
-        taskProgress.setProgress(1.0);
-        statusArea.appendText("\n\t<<<Task Completed Loading of Results>>>\n\n");
-        statusArea.appendText("Please Load Prerequisites Now\n");
-        loadPrerequisitesBtn.setDisable(false);
+        try {
+            if (evisionFile != null && reader.openWorkBook()) {
+                statusArea.appendText("E-Vision File located at : " + evisionFile.getAbsolutePath() + "\n");
+                statusArea.appendText("Total Rows : " + reader.getTotalRows() + "\n");
+                statusArea.appendText("Total Columns : " + reader.getTotalColumns() + "\n");
+                statusArea.appendText("\n\t<<<Task Completed Loading of Results>>>\n\n");
+                statusArea.appendText("Please Load Prerequisites Now\n");
+                taskProgress.setProgress(1.0);
+                loadPrerequisitesBtn.setDisable(false);
+            } else {
+                statusArea.appendText("No results were selected.  Please Select Results\n\n");
+            }
+            
+        } catch (IOException | BiffException ex) {
+            Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     @FXML
@@ -242,7 +261,7 @@ public class YearPlannerController implements Initializable {
         
         
         taskProgress.setProgress(1.0);
-        statusArea.appendText("<<<All Year Planners Created>>>");
+        statusArea.appendText("\n\t<<<All Year Planners Created>>>");
         progressBar.setProgress(1.0);
         calculateBtn.setDisable(true);
         selectOutputFolderBtn.setDisable(true);
