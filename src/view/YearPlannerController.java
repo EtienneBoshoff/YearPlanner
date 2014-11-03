@@ -26,6 +26,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import jxl.read.biff.BiffException;
 import model.Globals;
+import model.Module;
 import model.Sponsor;
 import model.Student;
 import yearplanner.YearPlanner;
@@ -214,6 +215,28 @@ public class YearPlannerController implements Initializable {
                 statusArea.appendText("E-Vision File located at : " + evisionFile.getAbsolutePath() + "\n");
                 statusArea.appendText("Total Rows : " + reader.getTotalRows() + "\n");
                 statusArea.appendText("Total Columns : " + reader.getTotalColumns() + "\n");
+                int taskCounter = 0;
+                double progressCounter = 0.0;
+                int sectionSplit = masterAddressList.size() / 10;
+                for (Student student : masterAddressList) {
+                    for (int i = 1; i < reader.getTotalRows(); i++) {
+                        if (reader.readCellValue(Globals.EXCEL_STUDENT_NUMBER, i).equalsIgnoreCase(student.getStudentNumber())) {
+                            student.addModule(new Module(reader.readCellValue(Globals.EXCEL_MODULE_CODE, i),
+                                reader.readCellValue(Globals.EXCEL_FINAL_MARK, i),
+                                reader.readCellValue(Globals.EXCEL_RESULT_CODE, i),
+                                semesterChoiceBox.getValue()));
+                        }
+                    }
+                    taskCounter++;
+                    if (taskCounter % sectionSplit == 0) {
+                        taskProgress.setProgress((progressCounter + 0.1));
+                    }
+                }
+                
+                statusArea.appendText("\nLast Student had : " 
+                        + masterAddressList.get(masterAddressList.size() - 1).getModules().size() 
+                        + " modules\n");
+                
                 statusArea.appendText("\n\t<<<Task Completed Loading of Results>>>\n\n");
                 statusArea.appendText("Please Load Prerequisites Now\n");
                 taskProgress.setProgress(1.0);

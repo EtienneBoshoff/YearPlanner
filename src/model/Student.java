@@ -46,6 +46,11 @@ public class Student {
     public Student(String name, String surname) {
         this.name = name;
         this.surname = surname;
+        this.modules = new ArrayList<>();
+    }
+    
+    public void addModule(Module module) {
+        this.modules.add(module);
     }
 
     public void seteVisionNumber(String eVisionNumber) {
