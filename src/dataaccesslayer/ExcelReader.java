@@ -55,7 +55,7 @@ public class ExcelReader {
     public String readCellValue(int column, int row) {
         Cell cell = sheet.getCell(column, row);
         String cellValue = cell.getContents();
-        return cellValue;
+        return cellValue.trim();
     }
     
     /**

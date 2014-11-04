@@ -23,12 +23,10 @@ public class Student {
     private String emailAddress;
     private Sponsor sponsor;
     private String advisor;
-    private String reportFilePath;
 
     public Student(String eVisionNumber, String studentNumber, String name, String surname, String course,
             String cellNumber, String emailAddress, Sponsor sponsor,
-            String advisor, ArrayList<Module> modules,
-            String reportFilePath) {
+            String advisor, ArrayList<Module> modules) {
         this.eVisionNumber = eVisionNumber;
         this.studentNumber = studentNumber;
         this.name = name;
@@ -36,7 +34,6 @@ public class Student {
         this.course = course;
 
         this.modules = modules;
-        this.reportFilePath = reportFilePath;
         this.cellNumber = cellNumber;
         this.emailAddress = emailAddress;
         this.sponsor = sponsor;
@@ -138,11 +135,4 @@ public class Student {
                 + this.surname + "\nModules:" + this.modules);
     }
 
-    public String getReportFilePath() {
-        return reportFilePath;
-    }
-
-    public void setReportFilePath(String reportFilePath) {
-        this.reportFilePath = reportFilePath;
-    }    
 }

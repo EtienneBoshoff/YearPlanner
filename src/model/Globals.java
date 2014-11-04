@@ -44,17 +44,18 @@ public class Globals {
     /*============================ FILE CONSTANTS ====================== */
     
     /* =========================== EXCEL CELL GLOBALS ================== */
-    // Constants reflect the cell number in the excel sheet
+    // Constants reflect the cell number in the excel sheet from evision
     public static final int EXCEL_EVISION_STUDENT = 0;
-    public static final int EXCEL_STUDENT_NUMBER = 1;
-    public static final int EXCEL_SURNAME = 2;
-    public static final int EXCEL_FIRST_NAME = 3;
-    public static final int EXCEL_MODULE_CODE = 4;
-    public static final int EXCEL_SEMESTER_MARK = 5;
-    public static final int EXCEL_EXAM_MARK = 6;
-    public static final int EXCEL_FINAL_MARK = 7;
-    public static final int EXCEL_RESULT_CODE = 8;
+    public static final int EXCEL_STUDENT_NUMBER = 2;
+    public static final int EXCEL_SURNAME = 3;
+    public static final int EXCEL_FIRST_NAME = 1;
+    public static final int EXCEL_MODULE_CODE = 6;
+    public static final int EXCEL_SEMESTER_MARK = 8;
+    public static final int EXCEL_EXAM_MARK = 9;
+    public static final int EXCEL_FINAL_MARK = 10;
+    public static final int EXCEL_RESULT_CODE = 11;
     
+    // Constants from ocean excel
     public static final int EXCEL_ADDRESS_FIRST_NAME = 2;
     public static final int EXCEL_ADDRESS_SURNAME = 1;
     public static final int EXCEL_CELL_NUMBER = 9;

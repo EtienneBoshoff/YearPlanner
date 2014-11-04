@@ -131,13 +131,13 @@ public class YearPlannerController implements Initializable {
                     // Set registered student's Qualification
                     registeredStudent.setCourse(reader.readCellValue(Globals.EXCEL_QUALIFICATION, i));
                     // Get Cell Number of registered student
-                    registeredStudent.setCellNumber(reader.readCellValue(Globals.EXCEL_CELL_NUMBER, i));
+                    registeredStudent.setCellNumber("+" + reader.readCellValue(Globals.EXCEL_CELL_NUMBER, i));
                     // Get Email of registered student
                     registeredStudent.setEmailAddress(reader.readCellValue(Globals.EXCEL_STUDENT_EMAIL, i));
                     // Setup sponsor
                     Sponsor studentSponsor = new Sponsor();
                     studentSponsor.setName(reader.readCellValue(Globals.EXCEL_SPONSOR_NAME, i));
-                    studentSponsor.setCellNumber(reader.readCellValue(Globals.EXCEL_SPONSOR_CELL_NUMBER, i));
+                    studentSponsor.setCellNumber("+" + reader.readCellValue(Globals.EXCEL_SPONSOR_CELL_NUMBER, i));
                     studentSponsor.setEmailAdress(reader.readCellValue(Globals.EXCEL_SPONSOR_EMAIL, i));
                     // Add sponsor to student
                     registeredStudent.setSponsor(studentSponsor);
