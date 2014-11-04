@@ -3,3 +3,7 @@ build/classes/view/YearPlannerController.class
 dist/YearPlanner.html
 dist/YearPlanner.jar
 dist/YearPlanner.jnlp
+build.xml
+build/*
+dist/*
+nbproject/*

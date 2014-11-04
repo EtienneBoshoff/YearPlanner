@@ -24,6 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import jxl.read.biff.BiffException;
 import model.Globals;
@@ -77,6 +78,8 @@ public class YearPlannerController implements Initializable {
     private List<Student> masterAddressList;
     
     private File template;
+    
+    private File outputFolder;
     /**
      * This method loads the registered students into the masterAddressList that 
      * will be used to create a year plan from for each student
@@ -237,7 +240,7 @@ public class YearPlannerController implements Initializable {
                     }
                 }
                 
-                //*
+                /*
                 statusArea.appendText("\nLast Student "
                         + masterAddressList.get(masterAddressList.size() - 1).getName()
                         + " "
@@ -276,15 +279,27 @@ public class YearPlannerController implements Initializable {
     
     @FXML
     private void handleSelectOutputFolder() {
-        statusArea.appendText("Setting up folder to save yearplanners in...\n\n");
+        
         progressBar.setProgress(0.50);
         taskProgress.setProgress(0.10);
         
+        // Choose folder where the documents will be saved.
+        DirectoryChooser fileChooser = new DirectoryChooser();
+        fileChooser.setTitle("Select The Folder Where You Would Like To Save The YearPlanners To");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         
-        taskProgress.setProgress(1.0);
-        statusArea.appendText("\n\t<<<Task Completed Select Output Folder>>>\n\n");
-        statusArea.appendText("Ready To Calculate Year Planners\n");
-        calculateBtn.setDisable(false);
+        outputFolder = fileChooser.showDialog(YearPlanner.getPrimaryStage());
+        statusArea.appendText("Setting up "+ outputFolder.getAbsolutePath() + " to save yearplanners in...\n\n");
+        if (outputFolder != null && outputFolder.isDirectory()) {
+            taskProgress.setProgress(1.0);
+            statusArea.appendText("\n\t<<<Task Completed Select Output Folder>>>\n\n");
+            statusArea.appendText("Ready To Calculate Year Planners\n");
+            calculateBtn.setDisable(false);
+        } else {
+            statusArea.appendText("\nNo Folder Chosen");
+            statusArea.appendText("Please Choose An Output Folder");
+        }
+        
     }
     
     @FXML
@@ -332,7 +347,13 @@ public class YearPlannerController implements Initializable {
         semesterChoiceBox.setItems(FXCollections.observableArrayList(
                 "Semester 1"
                 , "Semester 2"));
-        semesterChoiceBox.setValue("Semester 1");
+        // if after June
+        if (date.getMonthValue() > 5) {
+            semesterChoiceBox.setValue("Semester 2");
+        } else {
+            semesterChoiceBox.setValue("Semester 1");
+        }
+        
         loadTemplateBtn.setDisable(true);
         loadResultsBtn.setDisable(true);
         loadPrerequisitesBtn.setDisable(true);
