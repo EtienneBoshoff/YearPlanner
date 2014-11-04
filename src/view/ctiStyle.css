@@ -84,6 +84,7 @@ and open the template in the editor.
 
 .choice-box .context-menu .label {
     -fx-font-weight: normal;
+    -fx-font-family: Verdana;
 }
 
 .text-area {
