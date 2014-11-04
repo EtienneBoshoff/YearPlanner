@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -53,6 +54,7 @@ public class YearPlanner extends Application {
             yearPlannerLayout = (AnchorPane) loader.load();
             
             Scene scene = new Scene(yearPlannerLayout);
+            primaryStage.getIcons().add(new Image("/resources/planner.png"));
             primaryStage.setScene(scene);
             primaryStage.show();
             

@@ -20,6 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
@@ -69,6 +70,9 @@ public class YearPlannerController implements Initializable {
     
     @FXML
     private Button calculateBtn;
+    
+    @FXML
+    private Label logoLbl;
     
     private List<Student> masterAddressList;
     
@@ -233,9 +237,15 @@ public class YearPlannerController implements Initializable {
                     }
                 }
                 
-                statusArea.appendText("\nLast Student had : " 
+                //*
+                statusArea.appendText("\nLast Student "
+                        + masterAddressList.get(masterAddressList.size() - 1).getName()
+                        + " "
+                        + masterAddressList.get(masterAddressList.size() - 1).getSurname()
+                        +" had : " 
                         + masterAddressList.get(masterAddressList.size() - 1).getModules().size() 
-                        + " modules\n");
+                        + " modules loaded\n");
+                //*/
                 
                 statusArea.appendText("\n\t<<<Task Completed Loading of Results>>>\n\n");
                 statusArea.appendText("Please Load Prerequisites Now\n");
@@ -300,6 +310,7 @@ public class YearPlannerController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logoLbl.setId("logo-text");
         masterAddressList = new ArrayList<>();
         taskProgress.setProgress(-1.0);
         statusArea.setText("Program Ready. \nPlease Load Students.");
