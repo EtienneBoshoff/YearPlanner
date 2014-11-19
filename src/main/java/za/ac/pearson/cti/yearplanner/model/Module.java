@@ -5,6 +5,7 @@
  */
 package za.ac.pearson.cti.yearplanner.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +43,8 @@ public class Module {
 
     public Module(String module) {
         this.moduleCode = module;
+        this.preRequisites = new ArrayList<>();
+        this.coRequisites = new ArrayList<>();
     }
 /* ============== CONSTRUCTORS =========== */
     
@@ -81,6 +84,15 @@ public class Module {
 
     public boolean isYearModule() {
         return this.isYearModule;
+    }
+    
+    public String getCoRequisites() {
+        String resultString = "";
+        resultString = coRequisites.stream()
+                .filter((module) -> (module.getModuleCode() != null))
+                .map((module) -> module.getModuleCode() + " ")
+                .reduce(resultString, String::concat);
+        return resultString;
     }
 
     @Override

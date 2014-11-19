@@ -52,6 +52,17 @@ public class Globals {
     public static final int EXCEL_SPONSOR_CELL_NUMBER = 19;
     public static final int EXCEL_ADDRESS_DV_NUM = 0;
     
+    // Constants from Bsc IT Template
+    // Rows start from 0 as well
+    public static final int YEAR_ONE_START_ROW = 16;
+    public static final int YEAR_ONE_END_ROW = 27;
+    public static final int YEAR_TWO_START_ROW = 29;
+    public static final int YEAR_TWO_END_ROW = 39;
+    public static final int YEAR_THREE_START_ROW = 41;
+    public static final int YEAR_THREE_END_ROW = 49; 
+    public static final int TEMPLATE_MODULE_COL = 2; // Column C
+    public static final int TEMPLATE_PREREQUISITE_COL = 3; // Column D
+    
     /* =========================== EXCEL CELL GLOBALS ================== */
     
 }

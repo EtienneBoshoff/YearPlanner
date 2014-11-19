@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -290,10 +291,66 @@ public class YearPlannerController implements Initializable {
         
         statusArea.appendText("Filtered students from " + masterAddressList.size() 
                 + " down to " + currentSelectedYearStudents.size() + "\n");
+        
+        statusArea.appendText("\nLoading all year subjects into memory...\n");
+        List<Module> allModules = new ArrayList<>();
+        ExcelReader templateReader = new ExcelReader(template);
+        
+        try {
+            templateReader.openWorkBook();
+            allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_ONE_START_ROW, Globals.YEAR_ONE_END_ROW));
+            allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_TWO_START_ROW, Globals.YEAR_TWO_END_ROW));
+            allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_THREE_START_ROW, Globals.YEAR_THREE_END_ROW)); 
+            templateReader.closeWorkBook();
+        } catch (IOException | BiffException ex) {
+            Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        statusArea.appendText("Loaded " + allModules.size() + " modules into memory.\n");
+        
+        statusArea.appendText("\nFollowing Co-Requisites found and saved: \n\n");
+        // filter on all the coRequisites
+        allModules.stream().filter((module) -> (!module.getCoRequisites().equals("")))
+                .forEach((Module module) -> {
+                    statusArea.appendText("\tModule " + module.getModuleCode() 
+                            + " has co-requisite: " 
+                            + module.getCoRequisites() 
+                            + "\n");
+        });
+        
         taskProgress.setProgress(1.0);
         statusArea.appendText("\n\t<<<Task Completed Loading of Prerequisites>>>\n\n");
         statusArea.appendText("Please Select Output Folder Now\n");
         selectOutputFolderBtn.setDisable(false);
+    }
+    
+    /**
+     * This method gathers the module codes and their co-requisites in the template
+     * @param reader the template where the module codes reside
+     * @param beginningBoundry where the beginning of the module codes start
+     * @param endBoundry where the end of the module codes are
+     * @return A list of all the modules for a given year and their co-requisites
+     */
+    private List<Module> gatherModulesAndPreRequisitesFrom(ExcelReader reader, Integer beginningBoundry, Integer endBoundry) {
+        List<Module> moduleList = new ArrayList<>();
+        
+        for (int i = beginningBoundry; i < endBoundry; i++) {
+                Module currentModule = new Module(reader.readCellValue(Globals.TEMPLATE_MODULE_COL, i));
+                String unformattedPreRequisites = reader.readCellValue(Globals.TEMPLATE_PREREQUISITE_COL, i);
+                if (!unformattedPreRequisites.equals("")) {
+                    String[] preRequisites = unformattedPreRequisites.split(",");
+                    for (String preRequisite : preRequisites) {
+                        if (preRequisite != null) {
+                            Module preRequisiteModule = new Module(preRequisite);
+                            currentModule.addCoRequisite(preRequisiteModule);
+                        }
+                        
+                    }
+                }
+                moduleList.add(currentModule);
+            }
+        
+        return moduleList;
     }
     
     @FXML
