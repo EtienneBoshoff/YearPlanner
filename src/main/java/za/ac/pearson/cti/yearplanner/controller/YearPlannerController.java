@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package za.ac.pearson.cti.yearplanner.view;
+package za.ac.pearson.cti.yearplanner.controller;
 
 import za.ac.pearson.cti.yearplanner.dataaccesslayer.ExcelReader;
 import java.io.File;
