@@ -279,11 +279,14 @@ public class YearPlannerController implements Initializable {
         yearSelection.setDisable(true);
         yearGroupField.setDisable(true);
         semesterChoiceBox.setDisable(true);
-        statusArea.appendText("Student 0 course : " + masterAddressList.get(0).getCourse() + "\n");
         
+        // Filter all students according to selected year and group
         List<Student> currentSelectedYearStudents = masterAddressList.stream()
-                .filter(s -> s.getCourse().contains(yearSelection.getValue()))
+                .filter(s -> s.getCourse().contains(yearSelection.getValue()) && 
+                        s.getCourse().contains(yearGroupField.getValue()))
                 .collect(Collectors.toList());
+        
+        statusArea.appendText("Student 0 course : " + currentSelectedYearStudents.get(0).getCourse() + "\n");
         statusArea.appendText("Filtered students from " + masterAddressList.size() 
                 + " down to " + currentSelectedYearStudents.size() + "\n");
         taskProgress.setProgress(1.0);
