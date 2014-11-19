@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="447.0" prefWidth="600.0" stylesheets="@../styles/ctiStyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="za.ac.pearson.cti.yearplanner.view.YearPlannerController">
+<AnchorPane id="AnchorPane" prefHeight="447.0" prefWidth="600.0" stylesheets="@../styles/ctiStyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="za.ac.pearson.cti.yearplanner.controller.YearPlannerController">
    <children>
       <Button layoutX="461.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleLoadStudents" prefHeight="35.0" prefWidth="124.0" text="Load Students" AnchorPane.rightAnchor="15.0" />
       <Button fx:id="loadResultsBtn" layoutX="461.0" layoutY="158.0" mnemonicParsing="false" onAction="#handleLoadResults" prefHeight="35.0" prefWidth="124.0" text="Load Results" AnchorPane.rightAnchor="15.0" />
