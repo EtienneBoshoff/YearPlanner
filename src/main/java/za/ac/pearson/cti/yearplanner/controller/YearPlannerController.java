@@ -101,7 +101,7 @@ public class YearPlannerController implements Initializable {
         // Choose .xls file NOTE: Cannot be .xlsx since its not supported.
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Excel File with Student Information");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Downloads"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel 2003 Format", "*.xls"));
         
         File excelFile = fileChooser.showOpenDialog(YearPlanner.getPrimaryStage());
@@ -197,7 +197,9 @@ public class YearPlannerController implements Initializable {
         taskProgress.setProgress(0.10);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Please Select The Template For The Year Planner");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        File testFile = new File("src/main/resources/templates/");
+        System.out.println(testFile.getAbsolutePath());
+        fileChooser.setInitialDirectory(testFile);
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel 2003 Format", "*.xls"));
         template = fileChooser.showOpenDialog(YearPlanner.getPrimaryStage());
         if (template != null) {
@@ -219,7 +221,7 @@ public class YearPlannerController implements Initializable {
         taskProgress.setProgress(0.10);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Please Select The E-Vision Result Dump For The Year Planner");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Downloads"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel 2003 Format", "*.xls"));
         File evisionFile = fileChooser.showOpenDialog(YearPlanner.getPrimaryStage());
         
