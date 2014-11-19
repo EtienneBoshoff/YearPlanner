@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataaccesslayer;
+package za.ac.pearson.cti.yearplanner.dataaccesslayer;
 
 import org.junit.After;
 import org.junit.Before;
