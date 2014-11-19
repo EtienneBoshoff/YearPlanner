@@ -351,16 +351,18 @@ public class YearPlannerController implements Initializable {
         // Dynamically figure out available years
         LocalDate date = LocalDate.now();
         yearSelection.getItems().clear();
+        // populate years
         yearSelection.setItems(FXCollections.observableArrayList(
             (date.getYear() + 1) + "" , date.getYear() + "",
             (date.getYear() - 1) + "" , (date.getYear() - 2) + "",
             (date.getYear() - 3) + "", (date.getYear() - 4) + ""));
+        // set selection to current year
         yearSelection.setValue(date.getYear() + "");
         yearGroupField.getItems().clear();
         yearGroupField.setItems(FXCollections.observableArrayList(
-            "BSc Information Science", "BCOM Commerce", "Higher Certificate IT",
-                "Higher Certificate Commerce"));
-        yearGroupField.setValue("BSc Information Science");
+            "Bachelor of Science in Information Technology", "Bachelor of Commerce", "Higher Certificate in Information Technology",
+                "Higher Certificate in Commerce"));
+        yearGroupField.setValue("Bachelor of Science in Information Technology");
         // Show different semesters
         semesterChoiceBox.getItems().clear();
         semesterChoiceBox.setItems(FXCollections.observableArrayList(
