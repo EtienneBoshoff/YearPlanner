@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -124,28 +125,32 @@ public class YearPlannerController implements Initializable {
                         double progress = i / categorySpaces / 10;
                         taskProgress.setProgress(progress);
                     }
-                    // Get name and Surname
-                    String name = reader.readCellValue(Globals.EXCEL_ADDRESS_FIRST_NAME, i);
-                    String surname = reader.readCellValue(Globals.EXCEL_ADDRESS_SURNAME, i);
-                    // Create registered student
-                    Student registeredStudent = new Student(name, surname);
-                    // Set registered student's DV number
-                    registeredStudent.setStudentNumber(reader.readCellValue(Globals.EXCEL_ADDRESS_DV_NUM, i));
-                    // Set registered student's Qualification
-                    registeredStudent.setCourse(reader.readCellValue(Globals.EXCEL_QUALIFICATION, i));
-                    // Get Cell Number of registered student
-                    registeredStudent.setCellNumber("+" + reader.readCellValue(Globals.EXCEL_CELL_NUMBER, i));
-                    // Get Email of registered student
-                    registeredStudent.setEmailAddress(reader.readCellValue(Globals.EXCEL_STUDENT_EMAIL, i));
-                    // Setup sponsor
-                    Sponsor studentSponsor = new Sponsor();
-                    studentSponsor.setName(reader.readCellValue(Globals.EXCEL_SPONSOR_NAME, i));
-                    studentSponsor.setCellNumber("+" + reader.readCellValue(Globals.EXCEL_SPONSOR_CELL_NUMBER, i));
-                    studentSponsor.setEmailAdress(reader.readCellValue(Globals.EXCEL_SPONSOR_EMAIL, i));
-                    // Add sponsor to student
-                    registeredStudent.setSponsor(studentSponsor);
-                    
-                    masterAddressList.add(registeredStudent);
+                    // filter excel to only get current and started students
+                    if (reader.readCellValue(Globals.EXCEL_STUDENT_STATUS, i).equalsIgnoreCase("CURRENT") 
+                            || reader.readCellValue(Globals.EXCEL_STUDENT_STATUS, i).equalsIgnoreCase("STARTED")) {
+                        // Get name and Surname
+                        String name = reader.readCellValue(Globals.EXCEL_ADDRESS_FIRST_NAME, i);
+                        String surname = reader.readCellValue(Globals.EXCEL_ADDRESS_SURNAME, i);
+                        // Create registered student
+                        Student registeredStudent = new Student(name, surname);
+                        // Set registered student's DV number
+                        registeredStudent.setStudentNumber(reader.readCellValue(Globals.EXCEL_ADDRESS_DV_NUM, i));
+                        // Set registered student's Qualification
+                        registeredStudent.setCourse(reader.readCellValue(Globals.EXCEL_QUALIFICATION, i));
+                        // Get Cell Number of registered student
+                        registeredStudent.setCellNumber("+" + reader.readCellValue(Globals.EXCEL_CELL_NUMBER, i));
+                        // Get Email of registered student
+                        registeredStudent.setEmailAddress(reader.readCellValue(Globals.EXCEL_STUDENT_EMAIL, i));
+                        // Setup sponsor
+                        Sponsor studentSponsor = new Sponsor();
+                        studentSponsor.setName(reader.readCellValue(Globals.EXCEL_SPONSOR_NAME, i));
+                        studentSponsor.setCellNumber("+" + reader.readCellValue(Globals.EXCEL_SPONSOR_CELL_NUMBER, i));
+                        studentSponsor.setEmailAdress(reader.readCellValue(Globals.EXCEL_SPONSOR_EMAIL, i));
+                        // Add sponsor to student
+                        registeredStudent.setSponsor(studentSponsor);
+
+                        masterAddressList.add(registeredStudent);
+                    }
                 }
                 statusArea.appendText("Added : " + masterAddressList.size() + " students to memory...\n");
                 /*
@@ -268,9 +273,19 @@ public class YearPlannerController implements Initializable {
     private void handleLoadPrerequisites() {
         statusArea.appendText("Loading Prerequisites into memory...\n\n");
         progressBar.setProgress(0.40);
+        
+        statusArea.appendText("Locking Group, Year and Semester Choices now.\n");
         taskProgress.setProgress(0.10);
+        yearSelection.setDisable(true);
+        yearGroupField.setDisable(true);
+        semesterChoiceBox.setDisable(true);
+        statusArea.appendText("Student 0 course : " + masterAddressList.get(0).getCourse() + "\n");
         
-        
+        List<Student> currentSelectedYearStudents = masterAddressList.stream()
+                .filter(s -> s.getCourse().contains(yearSelection.getValue()))
+                .collect(Collectors.toList());
+        statusArea.appendText("Filtered students from " + masterAddressList.size() 
+                + " down to " + currentSelectedYearStudents.size() + "\n");
         taskProgress.setProgress(1.0);
         statusArea.appendText("\n\t<<<Task Completed Loading of Prerequisites>>>\n\n");
         statusArea.appendText("Please Select Output Folder Now\n");
@@ -289,14 +304,15 @@ public class YearPlannerController implements Initializable {
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         
         outputFolder = fileChooser.showDialog(YearPlanner.getPrimaryStage());
-        statusArea.appendText("Setting up "+ outputFolder.getAbsolutePath() + " to save yearplanners in...\n\n");
+        
         if (outputFolder != null && outputFolder.isDirectory()) {
+            statusArea.appendText("Setting up "+ outputFolder.getAbsolutePath() + " to save yearplanners in...\n\n");
             taskProgress.setProgress(1.0);
             statusArea.appendText("\n\t<<<Task Completed Select Output Folder>>>\n\n");
             statusArea.appendText("Ready To Calculate Year Planners\n");
             calculateBtn.setDisable(false);
         } else {
-            statusArea.appendText("\nNo Folder Chosen");
+            statusArea.appendText("\nNo Folder Chosen\n");
             statusArea.appendText("Please Choose An Output Folder");
         }
         
@@ -316,6 +332,9 @@ public class YearPlannerController implements Initializable {
         loadPrerequisitesBtn.setDisable(true);
         loadResultsBtn.setDisable(true);
         loadTemplateBtn.setDisable(true);
+        yearSelection.setDisable(false);
+        yearGroupField.setDisable(false);
+        semesterChoiceBox.setDisable(false);
     }
 
     /**

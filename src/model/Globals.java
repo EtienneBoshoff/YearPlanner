@@ -41,6 +41,7 @@ public class Globals {
     public static final int EXCEL_RESULT_CODE = 11;
     
     // Constants from ocean excel
+    public static final int EXCEL_STUDENT_STATUS = 6;
     public static final int EXCEL_ADDRESS_FIRST_NAME = 2;
     public static final int EXCEL_ADDRESS_SURNAME = 1;
     public static final int EXCEL_CELL_NUMBER = 9;
