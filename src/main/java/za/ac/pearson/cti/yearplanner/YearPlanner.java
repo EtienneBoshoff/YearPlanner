@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package yearplanner;
+package za.ac.pearson.cti.yearplanner;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -49,12 +49,12 @@ public class YearPlanner extends Application {
             FXMLLoader loader = new FXMLLoader();
             // search from the class path root so start with / otherwise it will
             // search from where current package
-            loader.setLocation(YearPlanner.class.getResource("/view/YearPlanner.fxml"));
+            loader.setLocation(getClass().getResource("/fxml/YearPlanner.fxml"));
 
             yearPlannerLayout = (AnchorPane) loader.load();
             
             Scene scene = new Scene(yearPlannerLayout);
-            primaryStage.getIcons().add(new Image("/resources/planner.png"));
+            primaryStage.getIcons().add(new Image(getClass().getResource("/images/planner.png").toString()));
             primaryStage.setScene(scene);
             primaryStage.show();
             

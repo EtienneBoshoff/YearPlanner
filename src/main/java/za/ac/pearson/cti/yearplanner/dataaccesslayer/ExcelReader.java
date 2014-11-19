@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dataaccesslayer;
+package za.ac.pearson.cti.yearplanner.dataaccesslayer;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
-import model.Globals;
+import za.ac.pearson.cti.yearplanner.model.Globals;
 
 /**
  *

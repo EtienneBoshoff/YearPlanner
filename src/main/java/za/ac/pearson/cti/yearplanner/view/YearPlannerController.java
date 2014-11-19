@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package za.ac.pearson.cti.yearplanner.view;
 
-import dataaccesslayer.ExcelReader;
+import za.ac.pearson.cti.yearplanner.dataaccesslayer.ExcelReader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,11 +28,11 @@ import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import jxl.read.biff.BiffException;
-import model.Globals;
-import model.Module;
-import model.Sponsor;
-import model.Student;
-import yearplanner.YearPlanner;
+import za.ac.pearson.cti.yearplanner.model.Globals;
+import za.ac.pearson.cti.yearplanner.model.Module;
+import za.ac.pearson.cti.yearplanner.model.Sponsor;
+import za.ac.pearson.cti.yearplanner.model.Student;
+import za.ac.pearson.cti.yearplanner.YearPlanner;
 
 /**
  *
