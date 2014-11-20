@@ -117,14 +117,15 @@ and open the template in the editor.
     -fx-indeterminate-bar-animation-time: 2;
 }
 
-.progress-bar .bar {
-    -fx-background-color:
-        -fx-box-border,
-        rgba(0,0,0,0.08),
-        linear-gradient(#5a61af, #51536d),
-        linear-gradient(#e4fbff 0%,#cee6fb 10%, #a5d3fb 50%, #88c6fb 51%, #d5faff 100%);
-    -fx-background-insets: 0, 1, 2;
-    -fx-padding: 0.416667em; /* 5 */
+.progress-bar > .bar {
+    -fx-background-color: linear-gradient(
+        from 0px .75em to .75em 0px,
+        repeat,
+        -fx-accent 0%,
+        -fx-accent 49%,
+        derive(-fx-accent, 30%) 50%,
+        derive(-fx-accent, 30%) 99%
+    );
 }
 
 .progress-bar:indeterminate .bar {
