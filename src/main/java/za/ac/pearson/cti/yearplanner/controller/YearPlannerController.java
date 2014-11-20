@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -398,7 +399,16 @@ public class YearPlannerController implements Initializable {
         yearGroupField.setDisable(false);
         semesterChoiceBox.setDisable(false);
     }
+    
+    @FXML
+    private void handleMouseEnteringButtonArea() {
+        YearPlanner.getPrimaryStage().getScene().setCursor(Cursor.HAND);
+    }
 
+    @FXML
+    private void handleMouseLeavingButtonArea() {
+        YearPlanner.getPrimaryStage().getScene().setCursor(Cursor.DEFAULT);
+    }
     /**
      * Initializes the choice box with the semester values
      * @param location
