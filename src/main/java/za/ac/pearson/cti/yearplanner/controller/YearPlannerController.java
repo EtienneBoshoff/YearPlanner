@@ -419,6 +419,7 @@ public class YearPlannerController implements Initializable {
         logoLbl.setId("logo-text");
         masterAddressList = new ArrayList<>();
         taskProgress.setProgress(-1.0);
+        progressBar.setProgress(-1.0);
         statusArea.setText("Program Ready. \nPlease Load Students.");
         // Dynamically figure out available years
         LocalDate date = LocalDate.now();
