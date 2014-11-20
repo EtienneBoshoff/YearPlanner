@@ -197,9 +197,7 @@ public class YearPlannerController implements Initializable {
         taskProgress.setProgress(0.10);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Please Select The Template For The Year Planner");
-        File testFile = new File("src/main/resources/templates/");
-        System.out.println(testFile.getAbsolutePath());
-        fileChooser.setInitialDirectory(testFile);
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Downloads"));
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel 2003 Format", "*.xls"));
         template = fileChooser.showOpenDialog(YearPlanner.getPrimaryStage());
         if (template != null) {
