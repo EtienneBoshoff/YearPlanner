@@ -63,6 +63,17 @@ public class Globals {
     public static final int TEMPLATE_MODULE_COL = 2; // Column C
     public static final int TEMPLATE_PREREQUISITE_COL = 3; // Column D
     
+    // ExcelTemplate Writing
+    public static final int DETAILS_COLUMN = 2; // Column C;
+    public static final int SURNAME_ROW = 3; // Row 4
+    public static final int NAME_ROW = 4; // Row 3
+    public static final int NUMBER_ROW = 5;
+    public static final int PHONE_ROW = 6;
+    public static final int EMAIL_ROW = 7;
+    public static final int SPONSOR = 9;
+    public static final int SPONSOR_PHONE = 10;
+    public static final int SPONSOR_EMAIL = 11;
+    
     /* =========================== EXCEL CELL GLOBALS ================== */
     
 }

@@ -29,6 +29,7 @@ import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import jxl.read.biff.BiffException;
+import jxl.write.WriteException;
 import za.ac.pearson.cti.yearplanner.model.Globals;
 import za.ac.pearson.cti.yearplanner.model.Module;
 import za.ac.pearson.cti.yearplanner.model.Sponsor;
@@ -86,6 +87,7 @@ public class YearPlannerController implements Initializable {
     
     private File outputFolder;
     private String EXCEL_FILE_EXTENTION = ".xls";
+    private List<Module> allModules;
     /**
      * This method loads the registered students into the masterAddressList that 
      * will be used to create a year plan from for each student
@@ -295,7 +297,7 @@ public class YearPlannerController implements Initializable {
                 + " down to " + currentSelectedYearStudents.size() + "\n");
         
         statusArea.appendText("\nLoading all year subjects into memory...\n");
-        List<Module> allModules = new ArrayList<>();
+        allModules = new ArrayList<>();
         ExcelReader templateReader = new ExcelReader(template);
         
         try {
@@ -383,14 +385,26 @@ public class YearPlannerController implements Initializable {
     
     @FXML
     private void handleCalculateYearPlanner() {
+        double studentServed = 0.0;
+        double currentProgress;
         statusArea.clear();
         statusArea.appendText("Calculating Year Planners\n");
         for (Student currentSelectedStudent : currentSelectedYearStudents) {
             String currentStudentFileName = formatFileNameForStudent(currentSelectedStudent);
-            ExcelWriter writer = new ExcelWriter(template, outputFolder);
+            ExcelWriter writer = new ExcelWriter(template, outputFolder.toString() 
+                    + "\\" 
+                    + currentStudentFileName);
             try {
-                writer.CreateExcelFileFromTemplate(currentStudentFileName);
-            } catch (IOException ex) {
+                writer.CreateExcelFileFromTemplate();
+                writer.FillInStudentDetails(currentSelectedStudent);
+                studentServed++;
+                currentProgress = (studentServed / currentSelectedYearStudents.size());
+                System.out.println("Served " + studentServed + "Students");
+                System.out.println("The current Progress is: " + currentProgress);
+                
+                taskProgress.setProgress(0.5);
+                
+            } catch (IOException | WriteException | BiffException ex) {
                 Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
