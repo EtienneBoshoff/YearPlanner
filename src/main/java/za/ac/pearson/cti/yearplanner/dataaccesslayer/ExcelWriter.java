@@ -21,6 +21,7 @@ import jxl.format.Border;
 import jxl.format.BorderLineStyle;
 import jxl.format.Colour;
 import jxl.format.UnderlineStyle;
+import jxl.format.VerticalAlignment;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
 import jxl.write.WritableCell;
@@ -85,7 +86,9 @@ public class ExcelWriter {
         WritableCellFormat cellFormat = new WritableCellFormat(wfontStatus);
         cellFormat.setWrap(true);
         cellFormat.setAlignment(Alignment.CENTRE);
+        cellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
         cellFormat.setBorder(Border.ALL, BorderLineStyle.THIN);
+        
         // Surname
         Label textToEnter = new Label(Globals.DETAILS_COLUMN, Globals.SURNAME_ROW,  
                         currentSelectedStudent.getSurname(), cellFormat ); // Column | Row
@@ -118,6 +121,8 @@ public class ExcelWriter {
         textToEnter = new Label(Globals.DETAILS_COLUMN, Globals.SPONSOR_EMAIL, 
                         currentSelectedStudent.getSponsor().getEmailAdress(), cellFormat);
         WritableCell sponsorEmail = (WritableCell) textToEnter;
+        
+        // Add to sheet
         sheet.addCell(sponsorEmail);
         sheet.addCell(studentEmail);
         sheet.addCell(sponsorCellNumber);
@@ -126,6 +131,8 @@ public class ExcelWriter {
         sheet.addCell(phoneCell);
         sheet.addCell(cellToFill);
         sheet.addCell(nameCell);
+        
+        // Write and close all
         copy.write();
         workbook.close();
         copy.close();

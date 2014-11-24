@@ -401,7 +401,7 @@ public class YearPlannerController implements Initializable {
                 currentProgress = (studentServed / currentSelectedYearStudents.size());
                 System.out.println("Served " + studentServed + "Students");
                 System.out.println("The current Progress is: " + currentProgress);
-                
+                // TODO: Fix broken progress bar
                 taskProgress.setProgress(0.5);
                 
             } catch (IOException | WriteException | BiffException ex) {
@@ -410,6 +410,7 @@ public class YearPlannerController implements Initializable {
         }
         
         taskProgress.setProgress(1.0);
+        statusArea.appendText("Created " + studentServed + " Year Planners." );
         statusArea.appendText("\n\t<<<All Year Planners Created>>>");
         progressBar.setProgress(1.0);
         calculateBtn.setDisable(true);
