@@ -34,6 +34,7 @@ import za.ac.pearson.cti.yearplanner.model.Module;
 import za.ac.pearson.cti.yearplanner.model.Sponsor;
 import za.ac.pearson.cti.yearplanner.model.Student;
 import za.ac.pearson.cti.yearplanner.YearPlanner;
+import za.ac.pearson.cti.yearplanner.dataaccesslayer.ExcelWriter;
 
 /**
  *
@@ -84,6 +85,7 @@ public class YearPlannerController implements Initializable {
     private File template;
     
     private File outputFolder;
+    private String EXCEL_FILE_EXTENTION = ".xls";
     /**
      * This method loads the registered students into the masterAddressList that 
      * will be used to create a year plan from for each student
@@ -383,7 +385,15 @@ public class YearPlannerController implements Initializable {
     private void handleCalculateYearPlanner() {
         statusArea.clear();
         statusArea.appendText("Calculating Year Planners\n");
-        
+        for (Student currentSelectedStudent : currentSelectedYearStudents) {
+            String currentStudentFileName = formatFileNameForStudent(currentSelectedStudent);
+            ExcelWriter writer = new ExcelWriter(template, outputFolder);
+            try {
+                writer.CreateExcelFileFromTemplate(currentStudentFileName);
+            } catch (IOException ex) {
+                Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
         taskProgress.setProgress(1.0);
         statusArea.appendText("\n\t<<<All Year Planners Created>>>");
@@ -396,6 +406,14 @@ public class YearPlannerController implements Initializable {
         yearSelection.setDisable(false);
         yearGroupField.setDisable(false);
         semesterChoiceBox.setDisable(false);
+    }
+    
+    private String formatFileNameForStudent(Student student) {
+        String currentStudentFileName = student.getName() +
+                    " " + student.getSurname() +
+                    ", " + student.getStudentNumber() +
+                    EXCEL_FILE_EXTENTION;
+        return currentStudentFileName;
     }
     
     @FXML

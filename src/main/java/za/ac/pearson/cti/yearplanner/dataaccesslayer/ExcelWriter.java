@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import java.util.Locale;
 import jxl.Workbook;
@@ -52,11 +53,13 @@ public class ExcelWriter {
         return true;
     }
     
-    public boolean CreateExcelFileFromTemplate() throws IOException {
+    public boolean CreateExcelFileFromTemplate(String newFileName) throws IOException {
+        this.excelFile = new File(this.excelFile.getAbsolutePath() + "\\" + newFileName);
         if (this.excelFile.exists()) {
             return false;
         }
         Files.copy(this.template.toPath(), this.excelFile.toPath(), COPY_ATTRIBUTES);
+        System.out.println("\nCopied file to:" + excelFile.getAbsolutePath());
         return true;
     }
     
