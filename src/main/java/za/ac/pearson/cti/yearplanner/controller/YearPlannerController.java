@@ -447,8 +447,7 @@ public class YearPlannerController implements Initializable {
     
     private void calculatePreRequisites(Student student) {
         student.getModules().stream().filter((module) -> (module.getPreRequisitesList().size() > 0)).forEach((module) -> {
-            Module affectedModule = new Module(module);
-            affectedModule.getPreRequisitesList().stream().forEach((preRequisite) -> {
+            module.getPreRequisitesList().stream().forEach((preRequisite) -> {
                 student.getModules().stream().filter((moduleToCompare) ->
                         (preRequisite.equals(moduleToCompare) && moduleToCompare.getStatus().equals("REDO"))).forEach((_item) ->
                         {

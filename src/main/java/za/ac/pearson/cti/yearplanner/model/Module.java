@@ -49,17 +49,6 @@ public class Module {
         this.semester = "";
     }
 /* ============== CONSTRUCTORS =========== */
-
-    public Module(Module module) {
-        this.moduleCode = module.getModuleCode();
-        this.preRequisites = new ArrayList<>();
-        this.preRequisites.addAll(module.getPreRequisitesList());
-        this.coRequisites = new ArrayList<>(); 
-        this.coRequisites.addAll(module.getCoRequisitesList());
-        this.finalMark = module.getFinalMark();
-        this.semester = module.getSemester();
-        this.status = module.getStatus();
-    }
     
     public List<Module> getCoRequisitesList() {
         return coRequisites;
