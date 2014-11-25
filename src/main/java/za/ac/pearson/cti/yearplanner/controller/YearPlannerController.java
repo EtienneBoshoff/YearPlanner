@@ -29,7 +29,6 @@ import javafx.scene.control.TextArea;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import jxl.read.biff.BiffException;
-import jxl.write.WriteException;
 import za.ac.pearson.cti.yearplanner.model.Globals;
 import za.ac.pearson.cti.yearplanner.model.Module;
 import za.ac.pearson.cti.yearplanner.model.Sponsor;
@@ -86,7 +85,7 @@ public class YearPlannerController implements Initializable {
     private File template;
     
     private File outputFolder;
-    private String EXCEL_FILE_EXTENTION = ".xls";
+    private final String EXCEL_FILE_EXTENTION = ".xls";
     private List<Module> allModules;
     /**
      * This method loads the registered students into the masterAddressList that 
@@ -240,10 +239,26 @@ public class YearPlannerController implements Initializable {
                 for (Student student : masterAddressList) {
                     for (int i = 1; i < reader.getTotalRows(); i++) {
                         if (reader.readCellValue(Globals.EXCEL_STUDENT_NUMBER, i).equalsIgnoreCase(student.getStudentNumber())) {
-                            student.addModule(new Module(reader.readCellValue(Globals.EXCEL_MODULE_CODE, i),
+                            Module tempModule = new Module(reader.readCellValue(Globals.EXCEL_MODULE_CODE, i),
                                 reader.readCellValue(Globals.EXCEL_FINAL_MARK, i),
-                                reader.readCellValue(Globals.EXCEL_RESULT_CODE, i),
-                                semesterChoiceBox.getValue()));
+                                reader.readCellValue(Globals.EXCEL_RESULT_CODE, i));
+                            if (tempModule.getModuleCode()
+                                    .substring(tempModule.getModuleCode().length() - 2,
+                                            tempModule.getModuleCode().length() - 1)
+                                    .equals("2")) {
+                                tempModule.setSemester("Semester 2");
+                            }
+                            else {
+                                if (tempModule.getModuleCode()
+                                    .substring(tempModule.getModuleCode().length() - 2,
+                                            tempModule.getModuleCode().length() - 1)
+                                    .equals("1")) {
+                                        tempModule.setSemester("Semester 1");
+                                } else {
+                                    tempModule.setSemester("Year");
+                                }
+                            }
+                            student.addModule(tempModule);
                         }
                     }
                     taskCounter++;
@@ -340,6 +355,7 @@ public class YearPlannerController implements Initializable {
         
         for (int i = beginningBoundry; i < endBoundry; i++) {
                 Module currentModule = new Module(reader.readCellValue(Globals.TEMPLATE_MODULE_COL, i));
+                currentModule.setTemplateRow(i);
                 String unformattedPreRequisites = reader.readCellValue(Globals.TEMPLATE_PREREQUISITE_COL, i);
                 if (!unformattedPreRequisites.equals("")) {
                     String[] preRequisites = unformattedPreRequisites.split(",");
@@ -394,19 +410,25 @@ public class YearPlannerController implements Initializable {
             ExcelWriter writer = new ExcelWriter(template, outputFolder.toString() 
                     + "\\" 
                     + currentStudentFileName);
-            try {
-                writer.CreateExcelFileFromTemplate();
-                writer.FillInStudentDetails(currentSelectedStudent);
+            //try {
+                //writer.CreateExcelFileFromTemplate();
+                // TODO: Take responsibility away from writer and put it back in controller
+                //writer.FillInStudentDetails(currentSelectedStudent);
+                
+                //fill in all passed subjects
+                calculateSubjectStates(currentSelectedStudent);
+                addMissingSubjects(currentSelectedStudent);
+                calculatePreRequisites(currentSelectedStudent);
+                writer.WriteYearPlan(currentSelectedStudent);
                 studentServed++;
                 currentProgress = (studentServed / currentSelectedYearStudents.size());
-                System.out.println("Served " + studentServed + "Students");
-                System.out.println("The current Progress is: " + currentProgress);
+                //System.out.println("Served " + studentServed + "Students");
                 // TODO: Fix broken progress bar
                 taskProgress.setProgress(0.5);
                 
-            } catch (IOException | WriteException | BiffException ex) {
+                /*} catch (IOException | WriteException | BiffException ex) {
                 Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                }*/
         }
         
         taskProgress.setProgress(1.0);
@@ -421,6 +443,84 @@ public class YearPlannerController implements Initializable {
         yearSelection.setDisable(false);
         yearGroupField.setDisable(false);
         semesterChoiceBox.setDisable(false);
+    }
+    
+    private void calculatePreRequisites(Student student) {
+        student.getModules().stream().filter((module) -> (module.getPreRequisitesList().size() > 0)).forEach((module) -> {
+            Module affectedModule = new Module(module);
+            affectedModule.getPreRequisitesList().stream().forEach((preRequisite) -> {
+                student.getModules().stream().filter((moduleToCompare) ->
+                        (preRequisite.equals(moduleToCompare) && moduleToCompare.getStatus().equals("REDO"))).forEach((_item) ->
+                        {
+                            module.setStatus("FP");
+                        });
+            });
+        });
+    }
+    
+    private void addMissingSubjects(Student student) {
+        allModules.stream().filter((module) -> (!student.getModules().contains(module))).map((module) -> {
+            // Set module status to to be completed
+            module.setStatus("X");
+            return module;
+        }).map((module) -> {
+            // Check if semester is set if not set it
+            if (module.getSemester().equals("")) {
+                if (module.getModuleCode().substring(module.getModuleCode().length() - 2
+                        , module.getModuleCode().length() - 1).equals("2")) {
+                    module.setSemester("Semester 2");
+                } else {
+                    if (module.getModuleCode().substring(module.getModuleCode().length() - 2
+                            , module.getModuleCode().length() - 1).equals("1")) {
+                        module.setSemester("Semester 1");
+                    } else {
+                        module.setSemester("Year");
+                    } 
+                }
+            }
+            return module;
+        }).forEach((module) -> {
+            student.addModule(module);
+        });
+    }
+    
+    private void calculateSubjectStates(Student student) {
+        
+        // Go through each module available for the student
+        for (Module module : allModules) {
+            boolean moduleStillToBeCompleted = true;
+            // Check each student module
+            for (Module studentModule : student.getModules()) {
+                if (module.getModuleCode()
+                        .equalsIgnoreCase(studentModule.getModuleCode())) {
+                    //try {
+                        if (!studentModule.getFinalMark().equals("")
+                                && Double.parseDouble(studentModule.getFinalMark()) > 50.0) {
+                            studentModule.setStatus("P");
+                            studentModule.setTemplateRow(module.getTemplateRow());
+                            moduleStillToBeCompleted = false;
+
+                        } else {
+                            if (!studentModule.getFinalMark().equals("") 
+                                    && semesterChoiceBox.getValue().equals(studentModule.getSemester())
+                                    && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
+                                studentModule.setStatus("REDO");
+                            }
+                            else {
+                                studentModule.setStatus("X");
+                            }
+                            studentModule.setTemplateRow(module.getTemplateRow());
+                            moduleStillToBeCompleted = false;
+                        }
+                }
+                if (moduleStillToBeCompleted) {
+                    studentModule.setStatus("X");
+                    studentModule.setTemplateRow(module.getTemplateRow());
+                    moduleStillToBeCompleted = false;
+                }
+            }
+        }
+        
     }
     
     private String formatFileNameForStudent(Student student) {

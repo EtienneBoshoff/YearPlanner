@@ -7,6 +7,7 @@ package za.ac.pearson.cti.yearplanner.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -25,28 +26,52 @@ public class Module {
     private final String moduleCode;
     private String finalMark;
     private String status;
-    private boolean isYearModule;
     private String semester;
     private List<Module> preRequisites;
     private List<Module> coRequisites;
+    private int templateRow;
 
     /* ============== CONSTRUCTORS =========== */
     public Module(String module, String finalMark,
-            String status, String semester) {
+            String status) {
         this.moduleCode = module;
         this.finalMark = finalMark;
         this.status = status;
-        this.isYearModule = (semester.equals("Y"));
-        this.semester = semester;
-
+        this.semester = "";
+        this.preRequisites = new ArrayList<>();
+        this.coRequisites = new ArrayList<>();
     }
 
     public Module(String module) {
         this.moduleCode = module;
         this.preRequisites = new ArrayList<>();
         this.coRequisites = new ArrayList<>();
+        this.semester = "";
     }
 /* ============== CONSTRUCTORS =========== */
+
+    public Module(Module module) {
+        this.moduleCode = module.getModuleCode();
+        this.preRequisites = new ArrayList<>();
+        this.preRequisites.addAll(module.getPreRequisitesList());
+        this.coRequisites = new ArrayList<>(); 
+        this.coRequisites.addAll(module.getCoRequisitesList());
+        this.finalMark = module.getFinalMark();
+        this.semester = module.getSemester();
+        this.status = module.getStatus();
+    }
+    
+    public List<Module> getCoRequisitesList() {
+        return coRequisites;
+    }
+    
+    public void setTemplateRow(Integer templateRow) {
+        this.templateRow = templateRow;
+    }
+    
+    public void setSemester(String semester) {
+        this.semester = semester;
+    }
     
     public void setPreRequisites(List<Module> preRequisites) {
         this.preRequisites = preRequisites;
@@ -75,15 +100,18 @@ public class Module {
     public String getStatus() {
         return this.status;
     }
+    
+    public int getTemplateRow() {
+        return templateRow;
+    }
 
     /* Returns semester in String format of YEAR_OF_COURSE/SEMESTER_IT_TAKES_PLACE_IN */
     public String getSemester() {
-        return Globals.COURSE_YEAR + "/"
-                + (isYearModule ? "YEAR" : "SEM" + this.semester);
+        return semester;
     }
-
-    public boolean isYearModule() {
-        return this.isYearModule;
+    
+    public List<Module> getPreRequisitesList() {
+        return preRequisites;
     }
     
     public String getCoRequisites() {
@@ -100,5 +128,35 @@ public class Module {
         return ("\nModule: " + this.moduleCode + "\nFinal Mark: " + this.finalMark 
                 + "\nStatus:" + this.status);
     }
+
+    public void setStatus(String newStatus) {
+        this.status = newStatus;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Module other = (Module) obj;
+        if (!Objects.equals(this.moduleCode, other.moduleCode)) {
+            return false;
+        }
+        return true;
+    }
+    
+
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 83 * hash + Objects.hashCode(this.moduleCode);
+        return hash;
+    }
+
+
     
 }

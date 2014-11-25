@@ -73,8 +73,13 @@ public class Globals {
     public static final int SPONSOR = 9;
     public static final int SPONSOR_PHONE = 10;
     public static final int SPONSOR_EMAIL = 11;
+    public static final int YEAR_MODULE_COLUMN = 6;
+    public static final int TEMPLATE_SEMESTER2_COLUMN = 5;
+    public static final int TEMPLATE_SEMESTER1_COLUMN = 4;
     
     /* =========================== EXCEL CELL GLOBALS ================== */
+    public static int SUBSTRING_START = 6;
+    public static int SUBSTRING_END = 6;
     
 }
     
