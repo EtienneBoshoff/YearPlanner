@@ -302,40 +302,78 @@ public class YearPlannerController implements Initializable {
         yearGroupField.setDisable(true);
         semesterChoiceBox.setDisable(true);
         
-        // Filter all students according to selected year and group
-        currentSelectedYearStudents = masterAddressList.stream()
-                .filter(s -> s.getCourse().contains(yearSelection.getValue()) && 
-                        s.getCourse().contains(yearGroupField.getValue()))
-                .collect(Collectors.toList());
-        
-        statusArea.appendText("Filtered students from " + masterAddressList.size() 
-                + " down to " + currentSelectedYearStudents.size() + "\n");
-        
-        statusArea.appendText("\nLoading all year subjects into memory...\n");
-        allModules = new ArrayList<>();
-        ExcelReader templateReader = new ExcelReader(template);
-        
-        try {
-            templateReader.openWorkBook();
-            allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_ONE_START_ROW, Globals.YEAR_ONE_END_ROW));
-            allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_TWO_START_ROW, Globals.YEAR_TWO_END_ROW));
-            allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_THREE_START_ROW, Globals.YEAR_THREE_END_ROW)); 
-            templateReader.closeWorkBook();
-        } catch (IOException | BiffException ex) {
-            Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+        if (yearGroupField.getValue().equals("Bachelor of Science in Information Technology")) {
+             // Filter all students according to selected year and group
+            currentSelectedYearStudents = masterAddressList.stream()
+                    .filter(s -> s.getCourse().contains(yearSelection.getValue()) && 
+                            s.getCourse().contains(yearGroupField.getValue()))
+                    .collect(Collectors.toList());
+
+            statusArea.appendText("Filtered students from " + masterAddressList.size() 
+                    + " down to " + currentSelectedYearStudents.size() + "\n");
+
+            statusArea.appendText("\nLoading all year subjects into memory...\n");
+            allModules = new ArrayList<>();
+            ExcelReader templateReader = new ExcelReader(template);
+
+            try {
+                templateReader.openWorkBook();
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_ONE_START_ROW, Globals.YEAR_ONE_END_ROW));
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_TWO_START_ROW, Globals.YEAR_TWO_END_ROW));
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.YEAR_THREE_START_ROW, Globals.YEAR_THREE_END_ROW)); 
+                templateReader.closeWorkBook();
+            } catch (IOException | BiffException ex) {
+                Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            statusArea.appendText("Loaded " + allModules.size() + " modules into memory.\n");
+
+            statusArea.appendText("\nFollowing Co-Requisites found and saved: \n\n");
+            // filter on all the coRequisites
+            allModules.stream().filter((module) -> (!module.getCoRequisites().equals("")))
+                    .forEach((Module module) -> {
+                        statusArea.appendText("\tModule " + module.getModuleCode() 
+                                + " has co-requisite: " 
+                                + module.getCoRequisites() 
+                                + "\n");
+            });
         }
         
-        statusArea.appendText("Loaded " + allModules.size() + " modules into memory.\n");
-        
-        statusArea.appendText("\nFollowing Co-Requisites found and saved: \n\n");
-        // filter on all the coRequisites
-        allModules.stream().filter((module) -> (!module.getCoRequisites().equals("")))
-                .forEach((Module module) -> {
-                    statusArea.appendText("\tModule " + module.getModuleCode() 
-                            + " has co-requisite: " 
-                            + module.getCoRequisites() 
-                            + "\n");
-        });
+        if (yearGroupField.getValue().equals("Higher Certificate in Information Technology")) {
+             // Filter all students according to selected year and group
+            currentSelectedYearStudents = masterAddressList.stream()
+                    .filter(s -> s.getCourse().contains(yearSelection.getValue()) && 
+                            s.getCourse().contains(yearGroupField.getValue()))
+                    .collect(Collectors.toList());
+
+            statusArea.appendText("Filtered students from " + masterAddressList.size() 
+                    + " down to " + currentSelectedYearStudents.size() + "\n");
+
+            statusArea.appendText("\nLoading all year subjects into memory...\n");
+            allModules = new ArrayList<>();
+            ExcelReader templateReader = new ExcelReader(template);
+
+            try {
+                templateReader.openWorkBook();
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.HC_YEAR_ONE_START_ROW, Globals.HC_YEAR_ONE_END_ROW));
+                templateReader.closeWorkBook();
+            } catch (IOException | BiffException ex) {
+                Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            statusArea.appendText("Loaded " + allModules.size() + " modules into memory.\n");
+
+            statusArea.appendText("\nFollowing Co-Requisites found and saved: \n\n");
+            // filter on all the coRequisites
+            allModules.stream().filter((module) -> (!module.getCoRequisites().equals("")))
+                    .forEach((Module module) -> {
+                        statusArea.appendText("\tModule " + module.getModuleCode() 
+                                + " has co-requisite: " 
+                                + module.getCoRequisites() 
+                                + "\n");
+            });
+        }
+       
         
         taskProgress.setProgress(1.0);
         statusArea.appendText("\n\t<<<Task Completed Loading of Prerequisites>>>\n\n");

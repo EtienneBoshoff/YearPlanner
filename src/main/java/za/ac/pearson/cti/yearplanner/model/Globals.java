@@ -61,6 +61,10 @@ public class Globals {
     public static final int TEMPLATE_MODULE_COL = 2; // Column C
     public static final int TEMPLATE_PREREQUISITE_COL = 3; // Column D
     
+    // Constants from Bsc HC IT
+    public static final int HC_YEAR_ONE_START_ROW = 16;
+    public static final int HC_YEAR_ONE_END_ROW = 28;
+    
     // ExcelTemplate Writing
     public static final int DETAILS_COLUMN = 2; // Column C;
     public static final int SURNAME_ROW = 3; // Row 4
