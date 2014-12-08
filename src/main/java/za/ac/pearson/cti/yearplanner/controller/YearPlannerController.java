@@ -245,17 +245,17 @@ public class YearPlannerController implements Initializable {
                             if (tempModule.getModuleCode()
                                     .substring(tempModule.getModuleCode().length() - 2,
                                             tempModule.getModuleCode().length() - 1)
-                                    .equals("2")) {
-                                tempModule.setSemester("Semester 2");
+                                    .equals(Globals.SEMESTER2_IDENTIFIER)) {
+                                tempModule.setSemester(Globals.SEMESTER2);
                             }
                             else {
                                 if (tempModule.getModuleCode()
                                     .substring(tempModule.getModuleCode().length() - 2,
                                             tempModule.getModuleCode().length() - 1)
-                                    .equals("1")) {
-                                        tempModule.setSemester("Semester 1");
+                                    .equals(Globals.SEMESTER1_IDENTIFIER)) {
+                                        tempModule.setSemester(Globals.SEMESTER1);
                                 } else {
-                                    tempModule.setSemester("Year");
+                                    tempModule.setSemester(Globals.COURSE_YEAR);
                                 }
                             }
                             student.addModule(tempModule);
@@ -419,6 +419,7 @@ public class YearPlannerController implements Initializable {
                 calculateSubjectStates(currentSelectedStudent);
                 addMissingSubjects(currentSelectedStudent);
                 calculatePreRequisites(currentSelectedStudent);
+                addLastMinuteChanges(currentSelectedStudent);
                 writer.WriteYearPlan(currentSelectedStudent);
                 studentServed++;
                 currentProgress = (studentServed / currentSelectedYearStudents.size());
@@ -449,31 +450,39 @@ public class YearPlannerController implements Initializable {
         student.getModules().stream().filter((module) -> (module.getPreRequisitesList().size() > 0)).forEach((module) -> {
             module.getPreRequisitesList().stream().forEach((preRequisite) -> {
                 student.getModules().stream().filter((moduleToCompare) ->
-                        (preRequisite.equals(moduleToCompare) && moduleToCompare.getStatus().equals("REDO"))).forEach((_item) ->
+                        (preRequisite.equals(moduleToCompare) && moduleToCompare.getStatus().equals(Globals.REDO))).forEach((_item) ->
                         {
-                            module.setStatus("FP");
+                            module.setStatus(Globals.FAILED_PREREQUISITES);
                         });
             });
+        });
+    }
+    
+    // This method adds last minute changes that are made.
+    // TODO : Fix this so that it reads the changes from a file.
+    private void addLastMinuteChanges(Student student) {
+        student.getModules().stream().filter((module) -> (module.getModuleCode().equalsIgnoreCase("C_ITMA121"))).forEach((module) -> {
+            module.setSemester(Globals.SEMESTER1);
         });
     }
     
     private void addMissingSubjects(Student student) {
         allModules.stream().filter((module) -> (!student.getModules().contains(module))).map((module) -> {
             // Set module status to to be completed
-            module.setStatus("X");
+            module.setStatus(Globals.TO_DO);
             return module;
         }).map((module) -> {
             // Check if semester is set if not set it
             if (module.getSemester().equals("")) {
                 if (module.getModuleCode().substring(module.getModuleCode().length() - 2
-                        , module.getModuleCode().length() - 1).equals("2")) {
-                    module.setSemester("Semester 2");
+                        , module.getModuleCode().length() - 1).equals(Globals.SEMESTER2_IDENTIFIER)) {
+                    module.setSemester(Globals.SEMESTER2);
                 } else {
                     if (module.getModuleCode().substring(module.getModuleCode().length() - 2
-                            , module.getModuleCode().length() - 1).equals("1")) {
-                        module.setSemester("Semester 1");
+                            , module.getModuleCode().length() - 1).equals(Globals.SEMESTER1_IDENTIFIER)) {
+                        module.setSemester(Globals.SEMESTER1);
                     } else {
-                        module.setSemester("Year");
+                        module.setSemester(Globals.COURSE_YEAR);
                     } 
                 }
             }
@@ -495,7 +504,7 @@ public class YearPlannerController implements Initializable {
                     //try {
                         if (!studentModule.getFinalMark().equals("")
                                 && Double.parseDouble(studentModule.getFinalMark()) > 50.0) {
-                            studentModule.setStatus("P");
+                            studentModule.setStatus(Globals.PASSED);
                             studentModule.setTemplateRow(module.getTemplateRow());
                             moduleStillToBeCompleted = false;
 
@@ -503,17 +512,17 @@ public class YearPlannerController implements Initializable {
                             if (!studentModule.getFinalMark().equals("") 
                                     && semesterChoiceBox.getValue().equals(studentModule.getSemester())
                                     && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
-                                studentModule.setStatus("REDO");
+                                studentModule.setStatus(Globals.REDO);
                             }
                             else {
-                                studentModule.setStatus("X");
+                                studentModule.setStatus(Globals.TO_DO);
                             }
                             studentModule.setTemplateRow(module.getTemplateRow());
                             moduleStillToBeCompleted = false;
                         }
                 }
                 if (moduleStillToBeCompleted) {
-                    studentModule.setStatus("X");
+                    studentModule.setStatus(Globals.TO_DO);
                     studentModule.setTemplateRow(module.getTemplateRow());
                     moduleStillToBeCompleted = false;
                 }
@@ -573,9 +582,9 @@ public class YearPlannerController implements Initializable {
                 , "Semester 2"));
         // if after June
         if (date.getMonthValue() > 5) {
-            semesterChoiceBox.setValue("Semester 2");
+            semesterChoiceBox.setValue(Globals.SEMESTER2);
         } else {
-            semesterChoiceBox.setValue("Semester 1");
+            semesterChoiceBox.setValue(Globals.SEMESTER1);
         }
         
         loadTemplateBtn.setDisable(true);

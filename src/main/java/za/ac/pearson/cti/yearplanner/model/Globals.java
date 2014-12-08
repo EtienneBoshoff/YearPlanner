@@ -12,17 +12,15 @@ package za.ac.pearson.cti.yearplanner.model;
 public class Globals {
     
 
-    public static String CURRENT_SEMESTER = "-1";
-    public static String COURSE_YEAR = "-1";
-    public static final String PROP_UPLOAD_PARENT_FOLDER = "upload_parent_folder";
-    public static final String PROP_OUTPUT_PARENT_FOLDER = "output_parent_folder";
-    public static final String PROP_STUDENT_ADDRESS = "student_address";
-    public static final String PROP_LEGEND_FILE = "properties/legend_properties.prop";
-    public static final String PROPERTIES_FILE = "properties.prop";
-    public static boolean PRINTER_POPUP = true;
-    public static final String SEMESTER1 = "1";
-    public static final String SEMESTER2 = "2";
-    public static final String PENDING = "PEN";
+    public static String COURSE_YEAR = "Year";
+    public static final String SEMESTER1 = "Semester 1";
+    public static final String SEMESTER2 = "Semester 2";
+    public static final String SEMESTER1_IDENTIFIER = "1";
+    public static final String SEMESTER2_IDENTIFIER = "2";
+    public static final String PASSED = "P";
+    public static final String REDO = "REDO";
+    public static final String FAILED_PREREQUISITES = "FP";
+    public static final String TO_DO = "X";
     
     /*============================ FILE CONSTANTS ====================== */
     public static final String DEFAULT_REGISTERED_STUDENT_FILE_LOCATION = "C:/temp/registered_students";
