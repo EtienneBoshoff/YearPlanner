@@ -463,6 +463,9 @@ public class YearPlannerController implements Initializable {
     private void addLastMinuteChanges(Student student) {
         student.getModules().stream().filter((module) -> (module.getModuleCode().equalsIgnoreCase("C_ITMA121"))).forEach((module) -> {
             module.setSemester(Globals.SEMESTER1);
+            if (module.getStatus().equalsIgnoreCase(Globals.TO_DO)) {
+                module.setStatus(Globals.REDO);
+            }
         });
     }
     
@@ -496,21 +499,21 @@ public class YearPlannerController implements Initializable {
         
         // Go through each module available for the student
         for (Module module : allModules) {
-            boolean moduleStillToBeCompleted = true;
             // Check each student module
             for (Module studentModule : student.getModules()) {
                 if (module.getModuleCode()
                         .equalsIgnoreCase(studentModule.getModuleCode())) {
                     //try {
                         if (!studentModule.getFinalMark().equals("")
-                                && Double.parseDouble(studentModule.getFinalMark()) > 50.0) {
+                                && Double.parseDouble(studentModule.getFinalMark()) >= 50.0) {
                             studentModule.setStatus(Globals.PASSED);
                             studentModule.setTemplateRow(module.getTemplateRow());
-                            moduleStillToBeCompleted = false;
 
                         } else {
+                            // TODO: Figure out the students current study year rather than this nonsense
                             if (!studentModule.getFinalMark().equals("") 
-                                    && semesterChoiceBox.getValue().equals(studentModule.getSemester())
+                                    && (!semesterChoiceBox.getValue().equals(studentModule.getSemester()) 
+                                    && student.getCourse().contains(yearSelection.getValue()))
                                     && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
                                 studentModule.setStatus(Globals.REDO);
                             }
@@ -518,13 +521,7 @@ public class YearPlannerController implements Initializable {
                                 studentModule.setStatus(Globals.TO_DO);
                             }
                             studentModule.setTemplateRow(module.getTemplateRow());
-                            moduleStillToBeCompleted = false;
                         }
-                }
-                if (moduleStillToBeCompleted) {
-                    studentModule.setStatus(Globals.TO_DO);
-                    studentModule.setTemplateRow(module.getTemplateRow());
-                    moduleStillToBeCompleted = false;
                 }
             }
         }
