@@ -13,10 +13,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -439,40 +443,48 @@ public class YearPlannerController implements Initializable {
     
     @FXML
     private void handleCalculateYearPlanner() {
-        double studentServed = 0.0;
         double currentProgress;
-        statusArea.clear();
         statusArea.appendText("Calculating Year Planners\n");
+        ExecutorService executor = Executors.newFixedThreadPool(Globals.THREAD_POOL_SIZE);
         for (Student currentSelectedStudent : currentSelectedYearStudents) {
             String currentStudentFileName = formatFileNameForStudent(currentSelectedStudent);
             ExcelWriter writer = new ExcelWriter(template, outputFolder.toString() 
                     + "\\" 
                     + currentStudentFileName);
-            //try {
-                //writer.CreateExcelFileFromTemplate();
-                // TODO: Take responsibility away from writer and put it back in controller
-                //writer.FillInStudentDetails(currentSelectedStudent);
+            calculateSubjectStates(currentSelectedStudent);
+            addMissingSubjects(currentSelectedStudent);
+            calculatePreRequisites(currentSelectedStudent);
+            addLastMinuteChanges(currentSelectedStudent);
+            writer.setCurrentStudent(currentSelectedStudent);
+            Task writingTask = new Task<Void>() {
+
+                @Override
+                protected Void call() throws Exception {
+                    final double max = 1.0;
+                    
+                    writer.run();
+                    ExcelWriter.updateExecutionCounter();
+                    updateProgress(ExcelWriter.getExecutionCounter(), max);
+                    return null;
+                }
+            
+            };
+            executor.execute(writingTask);
+ 
+            //currentProgress = (studentServed / currentSelectedYearStudents.size());
+            //System.out.println("Served " + studentServed + "Students");
+            // TODO: Fix broken progress bar
+            taskProgress.progressProperty().bind(writingTask.progressProperty());
                 
-                //fill in all passed subjects
-                calculateSubjectStates(currentSelectedStudent);
-                addMissingSubjects(currentSelectedStudent);
-                calculatePreRequisites(currentSelectedStudent);
-                addLastMinuteChanges(currentSelectedStudent);
-                writer.WriteYearPlan(currentSelectedStudent);
-                studentServed++;
-                currentProgress = (studentServed / currentSelectedYearStudents.size());
-                //System.out.println("Served " + studentServed + "Students");
-                // TODO: Fix broken progress bar
-                taskProgress.setProgress(0.5);
-                
-                /*} catch (IOException | WriteException | BiffException ex) {
-                Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
-                }*/
         }
         
-        taskProgress.setProgress(1.0);
-        statusArea.appendText("Created " + studentServed + " Year Planners." );
-        statusArea.appendText("\n\t<<<All Year Planners Created>>>");
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // Wait patiently
+        }
+        //taskProgress.setProgress(1.0);
+        statusArea.appendText("Created " + ExcelWriter.getExecutionCounter() + " Year Planners." );
+        statusArea.appendText("\n\n\t<<<All Year Planners Created>>>");
         progressBar.setProgress(1.0);
         calculateBtn.setDisable(true);
         selectOutputFolderBtn.setDisable(true);

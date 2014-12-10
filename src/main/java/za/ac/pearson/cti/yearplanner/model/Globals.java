@@ -21,6 +21,7 @@ public class Globals {
     public static final String REDO = "REDO";
     public static final String FAILED_PREREQUISITES = "FP";
     public static final String TO_DO = "X";
+    public static final int THREAD_POOL_SIZE = 10;
     
     /*============================ FILE CONSTANTS ====================== */
     public static final String DEFAULT_REGISTERED_STUDENT_FILE_LOCATION = "C:/temp/registered_students";

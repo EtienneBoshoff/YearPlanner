@@ -34,11 +34,15 @@ import za.ac.pearson.cti.yearplanner.model.Student;
  *
  * @author UBOSHET
  */
-public class ExcelWriter {
+public class ExcelWriter implements Runnable {
+    
+    private static int executionCounter = 0;
     
     private final File template;
     
     private File excelFile;
+    
+    private Student currentStudent;
 
     public ExcelWriter(File template, File outputFile) {
         this.template = template;
@@ -52,6 +56,18 @@ public class ExcelWriter {
 
     public void setExcelFile(File newFile) {
         this.excelFile = newFile;
+    }
+    
+    public static void updateExecutionCounter() {
+        executionCounter++;
+    }
+    
+    public static int getExecutionCounter() {
+        return executionCounter;
+    }
+    
+    public void setCurrentStudent(Student newCurrentStudent) {
+        this.currentStudent = newCurrentStudent;
     }
 
     public void WriteYearPlan(Student currentSelectedStudent) {
@@ -147,6 +163,11 @@ public class ExcelWriter {
         } catch (IOException | WriteException | BiffException ex) {
             Logger.getLogger(ExcelWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public void run() {
+        WriteYearPlan(currentStudent);
     }
     
     
