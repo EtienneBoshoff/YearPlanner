@@ -62,9 +62,22 @@ public class Globals {
     public static final int TEMPLATE_MODULE_COL = 2; // Column C
     public static final int TEMPLATE_PREREQUISITE_COL = 3; // Column D
     
-    // Constants from Bsc HC IT
+    //Constants from BCOM Template
+    public static final int COMMERCE_YEAR_ONE_START = 16;
+    public static final int COMMERCE_YEAR_ONE_END = 28;
+    public static final int COMMERCE_YEAR_TWO_START = 30;
+    public static final int COMMERCE_YEAR_TWO_END = 38;
+    public static final int COMMERCE_YEAR_THREE_START = 40;
+    public static final int COMMERCE_YEAR_THREE_END = 48;
+    
+    
+    // Constants from HC IT
     public static final int HC_YEAR_ONE_START_ROW = 16;
     public static final int HC_YEAR_ONE_END_ROW = 28;
+    
+    // Constants from Commerce HC
+    public static final int COM_HC_YEAR_ONE_START_ROW = 16;
+    public static final int COM_HC_YEAR_ONE_END_ROW = 26;
     
     // ExcelTemplate Writing
     public static final int DETAILS_COLUMN = 2; // Column C;

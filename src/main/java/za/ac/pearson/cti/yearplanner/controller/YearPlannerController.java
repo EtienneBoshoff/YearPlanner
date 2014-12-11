@@ -18,7 +18,6 @@ import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -343,6 +342,43 @@ public class YearPlannerController implements Initializable {
             });
         }
         
+        if (yearGroupField.getValue().equals("Bachelor of Commerce")) {
+             // Filter all students according to selected year and group
+            currentSelectedYearStudents = masterAddressList.stream()
+                    .filter(s -> s.getCourse().contains(yearSelection.getValue()) && 
+                            s.getCourse().contains(yearGroupField.getValue()))
+                    .collect(Collectors.toList());
+
+            statusArea.appendText("Filtered students from " + masterAddressList.size() 
+                    + " down to " + currentSelectedYearStudents.size() + "\n");
+
+            statusArea.appendText("\nLoading all year subjects into memory...\n");
+            allModules = new ArrayList<>();
+            ExcelReader templateReader = new ExcelReader(template);
+
+            try {
+                templateReader.openWorkBook();
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.COMMERCE_YEAR_ONE_START, Globals.COMMERCE_YEAR_ONE_END));
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.COMMERCE_YEAR_TWO_START, Globals.COMMERCE_YEAR_TWO_END));
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.COMMERCE_YEAR_THREE_START, Globals.COMMERCE_YEAR_THREE_END));
+                templateReader.closeWorkBook();
+            } catch (IOException | BiffException ex) {
+                Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            statusArea.appendText("Loaded " + allModules.size() + " modules into memory.\n");
+
+            statusArea.appendText("\nFollowing Co-Requisites found and saved: \n\n");
+            // filter on all the coRequisites
+            allModules.stream().filter((module) -> (!module.getCoRequisites().equals("")))
+                    .forEach((Module module) -> {
+                        statusArea.appendText("\tModule " + module.getModuleCode() 
+                                + " has co-requisite: " 
+                                + module.getCoRequisites() 
+                                + "\n");
+            });
+        }
+        
         if (yearGroupField.getValue().equals("Higher Certificate in Information Technology")) {
              // Filter all students according to selected year and group
             currentSelectedYearStudents = masterAddressList.stream()
@@ -378,6 +414,41 @@ public class YearPlannerController implements Initializable {
             });
         }
        
+        if (yearGroupField.getValue().equals("Higher Certificate in Business Management")) {
+             // Filter all students according to selected year and group
+            currentSelectedYearStudents = masterAddressList.stream()
+                    .filter(s -> s.getCourse().contains(yearSelection.getValue()) && 
+                            s.getCourse().contains(yearGroupField.getValue()))
+                    .collect(Collectors.toList());
+
+            statusArea.appendText("Filtered students from " + masterAddressList.size() 
+                    + " down to " + currentSelectedYearStudents.size() + "\n");
+
+            statusArea.appendText("\nLoading all year subjects into memory...\n");
+            allModules = new ArrayList<>();
+            ExcelReader templateReader = new ExcelReader(template);
+
+            try {
+                templateReader.openWorkBook();
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.COM_HC_YEAR_ONE_START_ROW, Globals.COM_HC_YEAR_ONE_END_ROW));
+                templateReader.closeWorkBook();
+            } catch (IOException | BiffException ex) {
+                Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            statusArea.appendText("Loaded " + allModules.size() + " modules into memory.\n");
+
+            statusArea.appendText("\nFollowing Co-Requisites found and saved: \n\n");
+            // filter on all the coRequisites
+            allModules.stream().filter((module) -> (!module.getCoRequisites().equals("")))
+                    .forEach((Module module) -> {
+                        statusArea.appendText("\tModule " + module.getModuleCode() 
+                                + " has co-requisite: " 
+                                + module.getCoRequisites() 
+                                + "\n");
+            });
+        }
+        
         
         taskProgress.setProgress(1.0);
         statusArea.appendText("\n\t<<<Task Completed Loading of Prerequisites>>>\n\n");
@@ -447,6 +518,7 @@ public class YearPlannerController implements Initializable {
         statusArea.appendText("Calculating Year Planners\n");
         ExecutorService executor = Executors.newFixedThreadPool(Globals.THREAD_POOL_SIZE);
         for (Student currentSelectedStudent : currentSelectedYearStudents) {
+            taskProgress.setProgress(0.0);
             String currentStudentFileName = formatFileNameForStudent(currentSelectedStudent);
             ExcelWriter writer = new ExcelWriter(template, outputFolder.toString() 
                     + "\\" 
@@ -460,22 +532,21 @@ public class YearPlannerController implements Initializable {
 
                 @Override
                 protected Void call() throws Exception {
-                    final double max = 1.0;
-                    
+                   
                     writer.run();
                     ExcelWriter.updateExecutionCounter();
-                    updateProgress(ExcelWriter.getExecutionCounter(), max);
+                    //updateProgress(ExcelWriter.getExecutionCounter(), currentSelectedYearStudents.size());
                     return null;
                 }
             
             };
             executor.execute(writingTask);
- 
+            taskProgress.setProgress(0.5);
             //currentProgress = (studentServed / currentSelectedYearStudents.size());
             //System.out.println("Served " + studentServed + "Students");
             // TODO: Fix broken progress bar
-            taskProgress.progressProperty().bind(writingTask.progressProperty());
-                
+            //taskProgress.progressProperty().bind(writingTask.progressProperty());
+            taskProgress.setProgress(1.0);
         }
         
         executor.shutdown();
@@ -620,7 +691,7 @@ public class YearPlannerController implements Initializable {
         yearGroupField.getItems().clear();
         yearGroupField.setItems(FXCollections.observableArrayList(
             "Bachelor of Science in Information Technology", "Bachelor of Commerce", "Higher Certificate in Information Technology",
-                "Higher Certificate in Commerce"));
+                "Higher Certificate in Business Management"));
         yearGroupField.setValue("Bachelor of Science in Information Technology");
         // Show different semesters
         semesterChoiceBox.getItems().clear();
