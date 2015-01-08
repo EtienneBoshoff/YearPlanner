@@ -27,6 +27,7 @@ public class Module {
     private String finalMark;
     private String status;
     private String semester;
+    private String examMark;
     private List<Module> preRequisites;
     private List<Module> coRequisites;
     private int templateRow;
@@ -58,6 +59,14 @@ public class Module {
         this.templateRow = templateRow;
     }
     
+    public void setFinalMark(String finalMark) {
+        this.finalMark = finalMark;
+    }
+    
+    public void setExamMark(String examMark) {
+        this.examMark = examMark;
+    }
+    
     public void setSemester(String semester) {
         this.semester = semester;
     }
@@ -76,6 +85,10 @@ public class Module {
     
     public void addCoRequisite(Module coRequisiteModule) {
         coRequisites.add(coRequisiteModule);
+    }
+    
+    public String getExamMark() {
+        return examMark;
     }
     
     public String getModuleCode() {

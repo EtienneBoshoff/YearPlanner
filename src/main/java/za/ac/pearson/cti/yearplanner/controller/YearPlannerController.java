@@ -245,6 +245,11 @@ public class YearPlannerController implements Initializable {
                             Module tempModule = new Module(reader.readCellValue(Globals.EXCEL_MODULE_CODE, i),
                                 reader.readCellValue(Globals.EXCEL_FINAL_MARK, i),
                                 reader.readCellValue(Globals.EXCEL_RESULT_CODE, i));
+                            // Check if the module has no final mark.  If it does not have then set it to zero
+                            if (tempModule.getFinalMark().equals("")) {
+                                tempModule.setFinalMark("0");
+                            }
+                            // Figure out in which semester this module is
                             if (tempModule.getModuleCode()
                                     .substring(tempModule.getModuleCode().length() - 2,
                                             tempModule.getModuleCode().length() - 1)
@@ -261,6 +266,14 @@ public class YearPlannerController implements Initializable {
                                     tempModule.setSemester(Globals.COURSE_YEAR);
                                 }
                             }
+                            if (reader.readCellValue(Globals.EXCEL_EXAM_MARK, i).equals(""))
+                            {
+                                tempModule.setExamMark("0");
+                            }
+                            else {
+                                tempModule.setExamMark(reader.readCellValue(Globals.EXCEL_EXAM_MARK, i));  
+                            }
+                            
                             student.addModule(tempModule);
                         }
                     }
@@ -626,16 +639,17 @@ public class YearPlannerController implements Initializable {
                         .equalsIgnoreCase(studentModule.getModuleCode())) {
                     //try {
                         if (!studentModule.getFinalMark().equals("")
-                                && Double.parseDouble(studentModule.getFinalMark()) >= 50.0) {
+                                && Double.parseDouble(studentModule.getFinalMark()) >= 50.0
+                                && Double.parseDouble(studentModule.getExamMark()) >= 50.0) {
                             studentModule.setStatus(Globals.PASSED);
                             studentModule.setTemplateRow(module.getTemplateRow());
 
                         } else {
                             // TODO: Figure out the students current study year rather than this nonsense
                             if (!studentModule.getFinalMark().equals("") 
-                                    && (!semesterChoiceBox.getValue().equals(studentModule.getSemester()) 
-                                    && student.getCourse().contains(yearSelection.getValue()))
-                                    && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
+                                    && student.getCourse().contains(yearSelection.getValue())
+                                    && (Double.parseDouble(studentModule.getFinalMark()) < 50.0
+                                    || Double.parseDouble(studentModule.getExamMark()) < 50.0)) {
                                 studentModule.setStatus(Globals.REDO);
                             }
                             else {
