@@ -644,8 +644,11 @@ public class YearPlannerController implements Initializable {
                                 studentModule.setStatus(Globals.PASSED);
                                 studentModule.setTemplateRow(module.getTemplateRow());
                             } else {
-                                if (Double.parseDouble(studentModule.getExamMark()) >= 50.0) {
+                                if (Double.parseDouble(studentModule.getExamMark()) >= 40.0) {
                                     studentModule.setStatus(Globals.PASSED);
+                                    studentModule.setTemplateRow(module.getTemplateRow());
+                                } else {
+                                    studentModule.setStatus(Globals.REDO);
                                     studentModule.setTemplateRow(module.getTemplateRow());
                                 }
                             }
@@ -654,13 +657,17 @@ public class YearPlannerController implements Initializable {
                             if (!studentModule.getFinalMark().equals("") 
                                     && student.getCourse().contains(yearSelection.getValue())
                                     && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
-                                if (Double.parseDouble(studentModule.getExamMark()) < 50.0) {
+                                if (Double.parseDouble(studentModule.getExamMark()) < 40.0) {
                                     studentModule.setStatus(Globals.REDO);
                                 } else {
                                     studentModule.setStatus(Globals.TO_DO);
                                 }
                             } 
                             
+                            //if the module_Status is blank make it a TO_DO Module
+                            if (!studentModule.getStatus().equals("")) {
+                                studentModule.setStatus(Globals.TO_DO);
+                            }
                             studentModule.setTemplateRow(module.getTemplateRow());
                         }
                 }
