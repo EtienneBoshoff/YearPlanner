@@ -639,22 +639,28 @@ public class YearPlannerController implements Initializable {
                         .equalsIgnoreCase(studentModule.getModuleCode())) {
                     //try {
                         if (!studentModule.getFinalMark().equals("")
-                                && Double.parseDouble(studentModule.getFinalMark()) >= 50.0
-                                && Double.parseDouble(studentModule.getExamMark()) >= 50.0) {
-                            studentModule.setStatus(Globals.PASSED);
-                            studentModule.setTemplateRow(module.getTemplateRow());
-
+                                && Double.parseDouble(studentModule.getFinalMark()) >= 50.0) {
+                            if (studentModule.getExamMark().equals("0")) {
+                                studentModule.setStatus(Globals.PASSED);
+                                studentModule.setTemplateRow(module.getTemplateRow());
+                            } else {
+                                if (Double.parseDouble(studentModule.getExamMark()) >= 50.0) {
+                                    studentModule.setStatus(Globals.PASSED);
+                                    studentModule.setTemplateRow(module.getTemplateRow());
+                                }
+                            }
                         } else {
                             // TODO: Figure out the students current study year rather than this nonsense
                             if (!studentModule.getFinalMark().equals("") 
                                     && student.getCourse().contains(yearSelection.getValue())
-                                    && (Double.parseDouble(studentModule.getFinalMark()) < 50.0
-                                    || Double.parseDouble(studentModule.getExamMark()) < 50.0)) {
-                                studentModule.setStatus(Globals.REDO);
-                            }
-                            else {
-                                studentModule.setStatus(Globals.TO_DO);
-                            }
+                                    && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
+                                if (Double.parseDouble(studentModule.getExamMark()) < 50.0) {
+                                    studentModule.setStatus(Globals.REDO);
+                                } else {
+                                    studentModule.setStatus(Globals.TO_DO);
+                                }
+                            } 
+                            
                             studentModule.setTemplateRow(module.getTemplateRow());
                         }
                 }
