@@ -72,9 +72,6 @@ public class YearPlannerController implements Initializable {
     private Button loadResultsBtn;
     
     @FXML
-    private Button loadPrerequisitesBtn;
-    
-    @FXML
     private Button selectOutputFolderBtn;
     
     @FXML
@@ -307,7 +304,6 @@ public class YearPlannerController implements Initializable {
                 statusArea.appendText("\n\t<<<Task Completed Loading of Results>>>\n\n");
                 statusArea.appendText("Please Load Prerequisites Now\n");
                 taskProgress.setProgress(1.0);
-                loadPrerequisitesBtn.setDisable(false);
             } else {
                 statusArea.appendText("No results were selected.  Please Select Results\n\n");
             }
@@ -316,10 +312,12 @@ public class YearPlannerController implements Initializable {
             Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        LoadPrerequisites();
+        
     }
     
     @FXML
-    private void handleLoadPrerequisites() {
+    private void LoadPrerequisites() {
         statusArea.appendText("Loading Prerequisites into memory...\n\n");
         progressBar.setProgress(0.40);
         
@@ -583,9 +581,7 @@ public class YearPlannerController implements Initializable {
         progressBar.setProgress(1.0);
         calculateBtn.setDisable(true);
         selectOutputFolderBtn.setDisable(true);
-        loadPrerequisitesBtn.setDisable(true);
         loadResultsBtn.setDisable(true);
-        loadTemplateBtn.setDisable(true);
         yearSelection.setDisable(false);
         yearGroupField.setDisable(false);
         semesterChoiceBox.setDisable(false);
@@ -731,7 +727,6 @@ public class YearPlannerController implements Initializable {
         
         loadTemplateBtn.setDisable(true);
         loadResultsBtn.setDisable(true);
-        loadPrerequisitesBtn.setDisable(true);
         selectOutputFolderBtn.setDisable(true);
         calculateBtn.setDisable(true);
     }

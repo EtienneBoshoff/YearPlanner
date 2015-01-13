@@ -10,7 +10,6 @@
    <children>
       <Button layoutX="461.0" layoutY="64.0" mnemonicParsing="false" onAction="#handleLoadStudents" onMouseEntered="#handleMouseEnteringButtonArea" onMouseExited="#handleMouseLeavingButtonArea" prefHeight="35.0" prefWidth="124.0" text="Load Students" AnchorPane.rightAnchor="15.0" />
       <Button fx:id="loadResultsBtn" layoutX="461.0" layoutY="158.0" mnemonicParsing="false" onAction="#handleLoadResults" onMouseEntered="#handleMouseEnteringButtonArea" onMouseExited="#handleMouseLeavingButtonArea" prefHeight="35.0" prefWidth="124.0" text="Load Results" AnchorPane.rightAnchor="15.0" />
-      <Button fx:id="loadPrerequisitesBtn" layoutX="461.0" layoutY="206.0" mnemonicParsing="false" onAction="#handleLoadPrerequisites" onMouseEntered="#handleMouseEnteringButtonArea" onMouseExited="#handleMouseLeavingButtonArea" prefHeight="35.0" prefWidth="124.0" text="Load Prerequisites" AnchorPane.rightAnchor="15.0" />
       <Button fx:id="calculateBtn" layoutX="446.0" layoutY="270.0" mnemonicParsing="false" onAction="#handleCalculateYearPlanner" onMouseEntered="#handleMouseEnteringButtonArea" onMouseExited="#handleMouseLeavingButtonArea" prefHeight="83.0" prefWidth="139.0" text="Calculate Year Planners" AnchorPane.bottomAnchor="47.0" AnchorPane.rightAnchor="15.0" />
       <Label alignment="TOP_LEFT" layoutX="50.0" layoutY="85.0" prefHeight="20.0" prefWidth="69.0" text="Group :" textAlignment="CENTER" AnchorPane.leftAnchor="30.0" />
       <Label layoutX="50.0" layoutY="116.0" text="Current Semester :" AnchorPane.leftAnchor="30.0" />
