@@ -18,6 +18,10 @@ public class Globals {
     public static final String SEMESTER1_IDENTIFIER = "1";
     public static final String SEMESTER2_IDENTIFIER = "2";
     public static final String PASSED = "P";
+    public static final String PASSED_VALUE = "PASSED";
+    public static final String FAILED_VALUE = "FAILED";
+    public static final String CREDIT_GIVEN_FOR_SUBJECT = "CREDIT";
+    public static final String CREDIT_MODULE = "C";
     public static final String REDO = "REDO";
     public static final String FAILED_PREREQUISITES = "FP";
     public static final String TO_DO = "X";
@@ -38,6 +42,7 @@ public class Globals {
     public static final int EXCEL_EXAM_MARK = 9;
     public static final int EXCEL_FINAL_MARK = 10;
     public static final int EXCEL_RESULT_CODE = 11;
+    public static final int EXCEL_FINAL_RESULT = 12;
     
     // Constants from ocean excel
     public static final int EXCEL_STUDENT_STATUS = 6;

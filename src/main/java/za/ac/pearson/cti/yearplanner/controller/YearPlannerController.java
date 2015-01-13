@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -231,17 +233,25 @@ public class YearPlannerController implements Initializable {
         
         ExcelReader reader = new ExcelReader(evisionFile);
         
+        
+        
         try {
             if (evisionFile != null && reader.openWorkBook()) {
                 statusArea.appendText("E-Vision File located at : " + evisionFile.getAbsolutePath() + "\n");
                 statusArea.appendText("Total Rows : " + reader.getTotalRows() + "\n");
                 statusArea.appendText("Total Columns : " + reader.getTotalColumns() + "\n");
+                
+                // get the evision numbers for the corresponding students' dv-numbers
+                AssignEvisionNumbersToStudentsList(masterAddressList, reader);
+                
+                statusArea.appendText("Added Missing e-Vision Numbers \n");
+                
                 int taskCounter = 0;
                 double progressCounter = 0.0;
                 int sectionSplit = masterAddressList.size() / 10;
                 for (Student student : masterAddressList) {
                     for (int i = 1; i < reader.getTotalRows(); i++) {
-                        if (reader.readCellValue(Globals.EXCEL_STUDENT_NUMBER, i).equalsIgnoreCase(student.getStudentNumber())) {
+                        if (reader.readCellValue(Globals.EXCEL_EVISION_STUDENT, i).equalsIgnoreCase(student.getEVisionNumber())) {
                             Module tempModule = new Module(reader.readCellValue(Globals.EXCEL_MODULE_CODE, i),
                                 reader.readCellValue(Globals.EXCEL_FINAL_MARK, i),
                                 reader.readCellValue(Globals.EXCEL_RESULT_CODE, i));
@@ -273,7 +283,8 @@ public class YearPlannerController implements Initializable {
                             else {
                                 tempModule.setExamMark(reader.readCellValue(Globals.EXCEL_EXAM_MARK, i));  
                             }
-                            
+                            // Get the result code from the spreadsheet
+                            tempModule.setFinalResult(reader.readCellValue(Globals.EXCEL_FINAL_RESULT, i));
                             student.addModule(tempModule);
                         }
                     }
@@ -638,38 +649,24 @@ public class YearPlannerController implements Initializable {
                 if (module.getModuleCode()
                         .equalsIgnoreCase(studentModule.getModuleCode())) {
                     //try {
-                        if (!studentModule.getFinalMark().equals("")
-                                && Double.parseDouble(studentModule.getFinalMark()) >= 50.0) {
-                            if (studentModule.getExamMark().equals("0")) {
-                                studentModule.setStatus(Globals.PASSED);
-                                studentModule.setTemplateRow(module.getTemplateRow());
-                            } else {
-                                if (Double.parseDouble(studentModule.getExamMark()) >= 40.0) {
-                                    studentModule.setStatus(Globals.PASSED);
-                                    studentModule.setTemplateRow(module.getTemplateRow());
-                                } else {
-                                    studentModule.setStatus(Globals.REDO);
-                                    studentModule.setTemplateRow(module.getTemplateRow());
-                                }
-                            }
-                        } else {
-                            // TODO: Figure out the students current study year rather than this nonsense
-                            if (!studentModule.getFinalMark().equals("") 
-                                    && student.getCourse().contains(yearSelection.getValue())
-                                    && Double.parseDouble(studentModule.getFinalMark()) < 50.0) {
-                                if (Double.parseDouble(studentModule.getExamMark()) < 40.0) {
-                                    studentModule.setStatus(Globals.REDO);
-                                } else {
-                                    studentModule.setStatus(Globals.TO_DO);
-                                }
-                            } 
-                            
-                            //if the module_Status is blank make it a TO_DO Module
-                            if (!studentModule.getStatus().equals("")) {
-                                studentModule.setStatus(Globals.TO_DO);
-                            }
-                            studentModule.setTemplateRow(module.getTemplateRow());
-                        }
+                      if (!studentModule.getFinalResult().equals("")
+                              && studentModule.getFinalResult().equals(Globals.PASSED_VALUE)) {
+                          studentModule.setStatus(Globals.PASSED);
+                          studentModule.setTemplateRow(module.getTemplateRow());
+                      } else {
+                          if (studentModule.getFinalResult().equals(Globals.CREDIT_GIVEN_FOR_SUBJECT)) {
+                              studentModule.setStatus(Globals.CREDIT_MODULE);
+                              studentModule.setTemplateRow(module.getTemplateRow());
+                          } else {
+                              if (studentModule.getFinalResult().equals(Globals.FAILED_VALUE)) {
+                                  studentModule.setStatus(Globals.REDO);
+                                  studentModule.setTemplateRow(module.getTemplateRow());
+                              } else {
+                                  studentModule.setStatus(Globals.TO_DO);
+                                  studentModule.setTemplateRow(module.getTemplateRow());
+                              }
+                          }
+                      }
                 }
             }
         }
@@ -737,6 +734,24 @@ public class YearPlannerController implements Initializable {
         loadPrerequisitesBtn.setDisable(true);
         selectOutputFolderBtn.setDisable(true);
         calculateBtn.setDisable(true);
+    }
+
+    private void AssignEvisionNumbersToStudentsList(List<Student> masterAddressList, ExcelReader reader) {
+
+        Map<String,String> studentNumberMap = new HashMap<>();
+         
+        for (int i = 1; i < reader.getTotalRows(); i++) {
+            if (!reader.readCellValue(Globals.EXCEL_STUDENT_NUMBER, i).equals("")) {
+                if (!studentNumberMap.containsKey(reader.readCellValue(Globals.EXCEL_STUDENT_NUMBER, i))) {
+                    studentNumberMap.put(reader.readCellValue(Globals.EXCEL_STUDENT_NUMBER, i)
+                        , reader.readCellValue(Globals.EXCEL_EVISION_STUDENT, i));
+                }
+            }
+        }
+        
+        masterAddressList.stream().forEach((Student student) -> {
+            student.seteVisionNumber(studentNumberMap.get(student.getStudentNumber()));
+        });
     }
     
     

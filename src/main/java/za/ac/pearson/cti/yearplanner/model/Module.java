@@ -31,6 +31,7 @@ public class Module {
     private List<Module> preRequisites;
     private List<Module> coRequisites;
     private int templateRow;
+    private String finalResult;
 
     /* ============== CONSTRUCTORS =========== */
     public Module(String module, String finalMark,
@@ -39,6 +40,7 @@ public class Module {
         this.finalMark = finalMark;
         this.status = status;
         this.semester = "";
+        this.finalResult = "";
         this.preRequisites = new ArrayList<>();
         this.coRequisites = new ArrayList<>();
     }
@@ -48,6 +50,7 @@ public class Module {
         this.preRequisites = new ArrayList<>();
         this.coRequisites = new ArrayList<>();
         this.semester = "";
+        this.finalResult = "";
     }
 /* ============== CONSTRUCTORS =========== */
     
@@ -124,6 +127,10 @@ public class Module {
                 .reduce(resultString, String::concat);
         return resultString;
     }
+    
+    public String getFinalResult() {
+        return finalResult;
+    }
 
     @Override
     public String toString() {
@@ -133,6 +140,10 @@ public class Module {
 
     public void setStatus(String newStatus) {
         this.status = newStatus;
+    }
+    
+    public void setFinalResult(String finalResult) {
+        this.finalResult = finalResult;
     }
 
     @Override
