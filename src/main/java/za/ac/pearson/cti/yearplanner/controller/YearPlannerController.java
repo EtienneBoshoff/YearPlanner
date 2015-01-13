@@ -639,33 +639,31 @@ public class YearPlannerController implements Initializable {
     private void calculateSubjectStates(Student student) {
         
         // Go through each module available for the student
-        for (Module module : allModules) {
+        allModules.stream().forEach((Module module) -> {
             // Check each student module
-            for (Module studentModule : student.getModules()) {
-                if (module.getModuleCode()
-                        .equalsIgnoreCase(studentModule.getModuleCode())) {
-                    //try {
-                      if (!studentModule.getFinalResult().equals("")
-                              && studentModule.getFinalResult().equals(Globals.PASSED_VALUE)) {
-                          studentModule.setStatus(Globals.PASSED);
-                          studentModule.setTemplateRow(module.getTemplateRow());
-                      } else {
-                          if (studentModule.getFinalResult().equals(Globals.CREDIT_GIVEN_FOR_SUBJECT)) {
-                              studentModule.setStatus(Globals.CREDIT_MODULE);
-                              studentModule.setTemplateRow(module.getTemplateRow());
-                          } else {
-                              if (studentModule.getFinalResult().equals(Globals.FAILED_VALUE)) {
-                                  studentModule.setStatus(Globals.REDO);
-                                  studentModule.setTemplateRow(module.getTemplateRow());
-                              } else {
-                                  studentModule.setStatus(Globals.TO_DO);
-                                  studentModule.setTemplateRow(module.getTemplateRow());
-                              }
-                          }
-                      }
-                }
-            }
-        }
+            student.getModules().stream().filter((studentModule) -> (module.getModuleCode()
+                    .equalsIgnoreCase(studentModule.getModuleCode()))).forEach((Module studentModule) -> {
+                        //try {
+                        if (!studentModule.getFinalResult().equals("")
+                                && studentModule.getFinalResult().equals(Globals.PASSED_VALUE)) {
+                            studentModule.setStatus(Globals.PASSED);
+                            studentModule.setTemplateRow(module.getTemplateRow());
+                        } else {
+                            if (studentModule.getFinalResult().equals(Globals.CREDIT_GIVEN_FOR_SUBJECT)) {
+                                studentModule.setStatus(Globals.CREDIT_MODULE);
+                                studentModule.setTemplateRow(module.getTemplateRow());
+                            } else {
+                                if (studentModule.getFinalResult().equals(Globals.FAILED_VALUE)) {
+                                    studentModule.setStatus(Globals.REDO);
+                                    studentModule.setTemplateRow(module.getTemplateRow());
+                                } else {
+                                    studentModule.setStatus(Globals.TO_DO);
+                                    studentModule.setTemplateRow(module.getTemplateRow());
+                                }
+                            }
+                        }
+                    });
+        });
         
     }
     
