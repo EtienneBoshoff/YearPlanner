@@ -454,6 +454,7 @@ public class YearPlannerController implements Initializable {
             try {
                 templateReader.openWorkBook();
                 allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.COM_HC_YEAR_ONE_START_ROW, Globals.COM_HC_YEAR_ONE_END_ROW));
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.HC_BCOM_YEAR_ONE_START, Globals.HC_BCOM_YEAR_ONE_END));
                 templateReader.closeWorkBook();
             } catch (IOException | BiffException ex) {
                 Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
@@ -623,9 +624,9 @@ public class YearPlannerController implements Initializable {
     
     private void addCreditsIfApplicable(Student student) {
         // HC IT Credits Given 
-        
+        List<Module> creditModules = new ArrayList<>();
         if (yearGroupField.getValue().equals("Higher Certificate in Information Technology")) {
-            List<Module> creditModules = new ArrayList<>();
+            
             
             for (Module module : student.getModules()) {
                 if (module.getModuleCode().equals("C_ITCO011") 
@@ -679,17 +680,56 @@ public class YearPlannerController implements Initializable {
                 }
                 
             }
-           
-            for (Module moduleToCredit : creditModules) {
-                for (Module availableModule : allModules) {
-                    if (moduleToCredit.getModuleCode().equals(availableModule.getModuleCode())) {
-                        moduleToCredit.setTemplateRow(availableModule.getTemplateRow());
-                    }
-                }
-                student.addModule(moduleToCredit);
-            }
+            
+            
+                
+            
         }
         
+        if (yearGroupField.getValue().equals("Higher Certificate in Business Management")) {
+                for (Module module : student.getModules()) {
+                    
+                    if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_COMA011")) { 
+                        Module creditModule = new Module("C_COMA111");
+                        creditModule.setStatus(Globals.CREDIT_MODULE);
+                        creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                        creditModule.setSemester(Globals.SEMESTER1);
+                        creditModule.setFinalMark("0");
+                        creditModules.add(creditModule);
+                    }
+                    
+                    if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_COHR021")) { 
+                        Module creditModule = new Module("C_COHR111");
+                        creditModule.setStatus(Globals.CREDIT_MODULE);
+                        creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                        creditModule.setSemester(Globals.SEMESTER1);
+                        creditModule.setFinalMark("0");
+                        creditModules.add(creditModule);
+                    }
+                    
+                    if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_COBM011")) { 
+                        Module creditModule = new Module("C_COBM111");
+                        creditModule.setStatus(Globals.CREDIT_MODULE);
+                        creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                        creditModule.setSemester(Globals.SEMESTER1);
+                        creditModule.setFinalMark("0");
+                        creditModules.add(creditModule);
+                    }
+                }
+        }
+            
+        for (Module moduleToCredit : creditModules) {
+            for (Module availableModule : allModules) {
+                if (moduleToCredit.getModuleCode().equals(availableModule.getModuleCode())) {
+                    moduleToCredit.setTemplateRow(availableModule.getTemplateRow());
+                }
+            }
+            student.addModule(moduleToCredit);
+        }
+
         
     }
     

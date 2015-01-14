@@ -85,6 +85,8 @@ public class Globals {
     // Constants from Commerce HC
     public static final int COM_HC_YEAR_ONE_START_ROW = 16;
     public static final int COM_HC_YEAR_ONE_END_ROW = 26;
+    public static final int HC_BCOM_YEAR_ONE_START = 28;
+    public static final int HC_BCOM_YEAR_ONE_END = 40;
     
     // ExcelTemplate Writing
     public static final int DETAILS_COLUMN = 2; // Column C;
