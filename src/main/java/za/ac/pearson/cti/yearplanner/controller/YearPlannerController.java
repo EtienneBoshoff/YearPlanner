@@ -418,6 +418,7 @@ public class YearPlannerController implements Initializable {
             try {
                 templateReader.openWorkBook();
                 allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.HC_YEAR_ONE_START_ROW, Globals.HC_YEAR_ONE_END_ROW));
+                allModules.addAll(gatherModulesAndPreRequisitesFrom(templateReader, Globals.HC_BSC_YEAR_ONE_START, Globals.HC_BSC_YEAR_ONE_END));
                 templateReader.closeWorkBook();
             } catch (IOException | BiffException ex) {
                 Logger.getLogger(YearPlannerController.class.getName()).log(Level.SEVERE, null, ex);
@@ -604,10 +605,92 @@ public class YearPlannerController implements Initializable {
     private void addLastMinuteChanges(Student student) {
         student.getModules().stream().filter((module) -> (module.getModuleCode().equalsIgnoreCase("C_ITMA121"))).forEach((module) -> {
             module.setSemester(Globals.SEMESTER1);
-            if (module.getStatus().equalsIgnoreCase(Globals.TO_DO)) {
+            if (module.getStatus().equalsIgnoreCase(Globals.TO_DO) 
+                    && !yearGroupField.getValue().equals("Higher Certificate in Information Technology")) {
                 module.setStatus(Globals.REDO);
             }
         });
+        student.getModules().stream().filter((module) -> (module.getModuleCode().equalsIgnoreCase("C_STDPA10D"))).forEach((module) -> {
+            module.setSemester(Globals.SEMESTER1);
+            if (Double.parseDouble(module.getExamMark()) >= 50) {
+                module.setFinalResult(Globals.PASSED_VALUE);
+                module.setStatus(Globals.PASSED);
+                module.setSemester(Globals.COURSE_YEAR);
+            }
+        });
+        
+    }
+    
+    private void addCreditsIfApplicable(Student student) {
+        // HC IT Credits Given 
+        
+        if (yearGroupField.getValue().equals("Higher Certificate in Information Technology")) {
+            List<Module> creditModules = new ArrayList<>();
+            
+            for (Module module : student.getModules()) {
+                if (module.getModuleCode().equals("C_ITCO011") 
+                        && module.getStatus().equalsIgnoreCase(Globals.PASSED)) {
+                    Module creditModule = new Module("C_ITCO111");
+                    creditModule.setStatus(Globals.CREDIT_MODULE);
+                    creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                    creditModule.setSemester(Globals.SEMESTER1);
+                    creditModule.setFinalMark("0");
+                    creditModules.add(creditModule);
+                }
+                
+                if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_ITPR011")) {
+                    Module creditModule = new Module("C_ITPR111");
+                    creditModule.setStatus(Globals.CREDIT_MODULE);
+                    creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                    creditModule.setSemester(Globals.SEMESTER1);
+                    creditModule.setFinalMark("0");
+                    creditModules.add(creditModule);
+                }
+                
+                if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_ITNT021")) {
+                    Module creditModule = new Module("C_ITNT111");
+                    creditModule.setStatus(Globals.CREDIT_MODULE);
+                    creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                    creditModule.setSemester(Globals.SEMESTER1);
+                    creditModule.setFinalMark("0");
+                    creditModules.add(creditModule);
+                }
+                
+                if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_ITHC021")) {
+                    Module creditModule = new Module("C_ITHC121");
+                    creditModule.setStatus(Globals.CREDIT_MODULE);
+                    creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                    creditModule.setSemester(Globals.SEMESTER2);
+                    creditModule.setFinalMark("0");
+                    creditModules.add(creditModule);
+                }
+                
+                if (module.getStatus().equalsIgnoreCase(Globals.PASSED)
+                        && module.getModuleCode().equals("C_ITII021")) { 
+                    Module creditModule = new Module("C_ITII121");
+                    creditModule.setStatus(Globals.CREDIT_MODULE);
+                    creditModule.setFinalResult(Globals.CREDIT_GIVEN_FOR_SUBJECT);
+                    creditModule.setSemester(Globals.SEMESTER2);
+                    creditModule.setFinalMark("0");
+                    creditModules.add(creditModule);
+                }
+                
+            }
+           
+            for (Module moduleToCredit : creditModules) {
+                for (Module availableModule : allModules) {
+                    if (moduleToCredit.getModuleCode().equals(availableModule.getModuleCode())) {
+                        moduleToCredit.setTemplateRow(availableModule.getTemplateRow());
+                    }
+                }
+                student.addModule(moduleToCredit);
+            }
+        }
+        
+        
     }
     
     private void addMissingSubjects(Student student) {
@@ -664,7 +747,7 @@ public class YearPlannerController implements Initializable {
                         }
                     });
         });
-        
+        addCreditsIfApplicable(student);
     }
     
     private String formatFileNameForStudent(Student student) {

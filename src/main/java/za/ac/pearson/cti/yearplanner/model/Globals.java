@@ -79,6 +79,8 @@ public class Globals {
     // Constants from HC IT
     public static final int HC_YEAR_ONE_START_ROW = 16;
     public static final int HC_YEAR_ONE_END_ROW = 28;
+    public static final int HC_BSC_YEAR_ONE_START = 30;
+    public static final int HC_BSC_YEAR_ONE_END = 40;
     
     // Constants from Commerce HC
     public static final int COM_HC_YEAR_ONE_START_ROW = 16;
