@@ -501,12 +501,10 @@ public class YearPlannerController implements Initializable {
                             Module preRequisiteModule = new Module(preRequisite);
                             currentModule.addCoRequisite(preRequisiteModule);
                         }
-                        
                     }
                 }
                 moduleList.add(currentModule);
             }
-        
         return moduleList;
     }
     
